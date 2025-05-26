@@ -1,0 +1,67 @@
+{% extends "qrmainpage/layout.html" %} {% load static %} {% block body %}
+<div class="layout">
+  <!-- Left Sidebar -->
+  <div class="sidebar">
+    <a href="https://example.com" target="_blank">
+      <img src="{% static 'qrmainpage/ad1.jpeg' %}" alt="Ad 1" class="ad-img"
+    /></a>
+  </div>
+  <div class="container">
+    {% if show_add_menu %}
+    <h2>Ajouter votre menu</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %} {{ file_form.as_p }}
+      <button type="submit" name="action" value="upload">
+        Upload & Generate QR
+      </button>
+    </form>
+    <br />
+    <a href="{% url 'qrmainpage:index' %}">← Retour</a>
+
+    {% else %}
+    <h1>QR Code Generator</h1>
+    <form method="POST">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Generate QR Code</button>
+    </form>
+    <br />
+    <form method="GET">
+      <button type="submit" name="menu" value="add">Ajouter votre menu</button>
+    </form>
+    {% endif %} {% if qr_image %}
+    <h3>Generated QR Code:</h3>
+    <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code" />
+    {% endif %}
+  </div>
+  <!-- Right Sidebar -->
+  <div class="sidebar">
+    <a href="https://example.com" target="_blank">
+      <img src="{% static 'qrmainpage/ad2.jpeg' %}" alt="Ad 2" class="ad-img"
+    /></a>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="footer">
+  <a href="https://example.com" target="_blank">
+    <img
+      src="{% static 'qrmainpage/footer_ad.jpg' %}"
+      alt="Footer Ad"
+      class="footer-img"
+  /></a>
+</footer>
+
+<script>
+  // Check if ?menu=add is in the URL
+  if (window.location.search.includes("menu=add")) {
+    // Show the add form section (your logic should already handle this server-side)
+
+    // Remove the query param from the URL without reloading
+    const newUrl =
+      window.location.protocol +
+      "//" +
+      window.location.host +
+      window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
+  }
+</script>
+{% endblock %}

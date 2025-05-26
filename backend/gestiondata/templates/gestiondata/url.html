@@ -1,0 +1,122 @@
+{% extends "gestiondata/layout.html" %} {% block body %}
+<h1>Créer une URL</h1>
+
+<input
+  type="text"
+  id="name_url"
+  placeholder="Nom de l'URL (ex: www.site.com)"
+/>
+<select id="four_url">
+  <option disabled selected>-- Sélectionner un fournisseur --</option>
+</select>
+
+<button onclick="createUrl()">Create URL</button>
+
+<h2>Mettre à jour un Menu</h2>
+<input type="number" id="update-id" placeholder="ID de l'URL à modifier" />
+<input
+  type="text"
+  id="update-name"
+  placeholder="Nouveau nom de l'URL (ex: www.nouveau-site.com)"
+/>
+<select id="update-four_url">
+  <option disabled selected>-- Sélectionner un fournisseur --</option>
+</select>
+<button onclick="updateUrl()">Update URL</button>
+
+<h2>Supprimer une URL</h2>
+<input type="number" id="delete-id" placeholder="ID de l'URL à supprimer" />
+<button onclick="deleteUrl()">Delete URL</button>
+
+<script>
+  fetch("/gestiondata/api/fournisseurs/")
+    .then((res) => res.json())
+    .then((data) => {
+      const select = document.getElementById("four_url");
+      data.forEach((f) => {
+        const option = document.createElement("option");
+        option.value = f.id;
+        option.textContent = f.name;
+        select.appendChild(option);
+      });
+    })
+    .catch((err) => console.error("Failed to load fournisseurs:", err));
+
+  fetch("/gestiondata/api/fournisseurs/")
+    .then((res) => res.json())
+    .then((data) => {
+      const select = document.getElementById("update-four_url");
+      data.forEach((f) => {
+        const option = document.createElement("option");
+        option.value = f.id;
+        option.textContent = f.name;
+        select.appendChild(option);
+      });
+    })
+    .catch((err) => console.error("Failed to load fournisseurs:", err));
+
+  function createUrl() {
+    const name_url = document.getElementById("name_url").value;
+    const four_url = parseInt(document.getElementById("four_url").value);
+
+    fetch("/gestiondata/api/urls/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({
+        name_url,
+        four_url,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        alert("URL créée !");
+      })
+      .catch((error) => console.error("Erreur:", error));
+  }
+
+  function updateUrl() {
+    const id = document.getElementById("update-id").value;
+    const name_url = document.getElementById("update-name").value;
+    const four_url = parseInt(document.getElementById("update-four_url").value);
+
+    fetch(`/gestiondata/api/urls/${id}/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({
+        name_url,
+        four_url,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        alert("URL mise à jour !");
+      })
+      .catch((error) => console.error("Erreur:", error));
+  }
+  function deleteUrl() {
+    const id = document.getElementById("delete-id").value;
+
+    fetch(`/gestiondata/api/urls/${id}/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        alert("URL supprimée !");
+      })
+      .catch((error) => console.error("Erreur:", error));
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "qrmainpage/layout.html" %} {% block body %}
+
+<h1>Fournisseur</h1>
+
+<input type="text" id="name" placeholder="name" />
+<input type="text" id="localisation" placeholder="localisation" />
+<input type="text" id="address" placeholder="address" />
+<input type="text" id="type" placeholder="type" />
+<input type="text" id="domaine" placeholder="domaine" />
+<input type="text" id="phone" placeholder="phone" />
+<input type="text" id="email" placeholder="email" />
+<input type="text" id="art" placeholder="art" />
+<input type="text" id="nis" placeholder="nis" />
+<input type="text" id="nif" placeholder="nif" />
+
+<button onclick="createFournisseur()">Create</button>
+<br />
+<a href="{% url 'qrmainpage:index' %}">← Retour</a>
+
+<script>
+  function createFournisseur() {
+    const name = document.getElementById("name").value;
+    const localisation = document.getElementById("localisation").value;
+    const address = document.getElementById("address").value;
+    const type = document.getElementById("type").value;
+    const domaine = document.getElementById("domaine").value;
+    const phone = document.getElementById("phone").value;
+    const email = document.getElementById("email").value;
+    const art = document.getElementById("art").value;
+    const nis = document.getElementById("nis").value;
+    const nif = document.getElementById("nif").value;
+
+    fetch("/qrmainpage/create/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({
+        name,
+        localisation,
+        address,
+        type,
+        domaine,
+        phone,
+        email,
+        art,
+        nis,
+        nif,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+  }
+</script>
+
+{%endblock%}

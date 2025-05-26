@@ -1,0 +1,40 @@
+# === GLOBAL IGNORE ===
+*.log
+*.tmp
+*.swp
+*.bak
+*.DS_Store
+Thumbs.db
+
+# === PYTHON / DJANGO ===
+*.pyc
+__pycache__/
+.env
+*.sqlite3
+venv/
+env/
+
+# Django migrations except __init__.py
+backend/**/migrations/
+!backend/**/migrations/__init__.py
+
+# PyCharm / VS Code
+backend/.idea/
+backend/.vscode/
+
+# === MYSQL ===
+*.sql
+*.dump
+*.db
+
+# === NODE / NEXT.JS ===
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/package-lock.json
+frontend/yarn.lock
+
+# IDEs and editor junk
+frontend/.vscode/
+frontend/.idea/

@@ -1,0 +1,146 @@
+{% extends "gestiondata/layout.html" %} {% block body %}
+<h1>Créer un Menu</h1>
+
+<input type="text" id="list_Menu" placeholder="Nom du Menu" />
+
+<input type="text" id="extension" placeholder="Extension (optionnel)" />
+<select id="type_menu">
+  <option disabled selected>-- Sélectionner un type de menu --</option>
+</select>
+<select id="url">
+  <option disabled selected>-- Sélectionner une URL --</option>
+</select>
+
+<button onclick="createMenu()">Create</button>
+
+<h2>Mettre à jour un Menu</h2>
+<input type="number" id="update-id" placeholder="ID du Menu à modifier" />
+<input type="text" id="update-name" placeholder="Nouveau nom du menu" />
+<input type="text" id="update-extension" placeholder="Nouvelle extension" />
+<select id="update-type_menu">
+  <option disabled selected>-- Sélectionner un TypeMenu --</option>
+</select>
+
+<select id="update-url">
+  <option disabled selected>-- Sélectionner une URL --</option>
+</select>
+<button onclick="updateMenu()">Update Menu</button>
+
+<h2>Supprimer un Menu</h2>
+<input type="number" id="delete-id" placeholder="ID du Menu à supprimer" />
+<button onclick="deleteMenu()">Delete Menu</button>
+
+<script>
+  // Load TypeMenus and URLs CREATE
+  fetch("/gestiondata/api/typemenus_urls/")
+    .then((res) => res.json())
+    .then((data) => {
+      const typeMenuSelect = document.getElementById("type_menu");
+      data.typemenus.forEach((t) => {
+        const option = document.createElement("option");
+        option.value = t.id;
+        option.textContent = t.name;
+        typeMenuSelect.appendChild(option);
+      });
+
+      const urlSelect = document.getElementById("url");
+      data.urls.forEach((u) => {
+        const option = document.createElement("option");
+        option.value = u.id;
+        option.textContent = u.name_url;
+        urlSelect.appendChild(option);
+      });
+    });
+  // Load TypeMenus and URLs UPDATE
+  fetch("/gestiondata/api/typemenus_urls/")
+    .then((res) => res.json())
+    .then((data) => {
+      const typeMenuSelect = document.getElementById("update-type_menu");
+      const urlSelect = document.getElementById("update-url");
+
+      data.typemenus.forEach((t) => {
+        const option = document.createElement("option");
+        option.value = t.id;
+        option.textContent = t.name;
+        typeMenuSelect.appendChild(option);
+      });
+
+      data.urls.forEach((u) => {
+        const option = document.createElement("option");
+        option.value = u.id;
+        option.textContent = u.name_url;
+        urlSelect.appendChild(option);
+      });
+    });
+  // CRUD Operations
+  function createMenu() {
+    const list_Menu = document.getElementById("list_Menu").value;
+
+    const extension = document.getElementById("extension").value;
+    const type_menu = document.getElementById("type_menu").value;
+    const url = document.getElementById("url").value;
+
+    fetch("/gestiondata/api/menus/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({
+        list_Menu,
+
+        extension,
+        type_menu,
+        Url: url,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+  }
+  function updateMenu() {
+    const id = document.getElementById("update-id").value;
+    const list_Menu = document.getElementById("update-name").value;
+    const extension = document.getElementById("update-extension").value;
+    const type_menu = document.getElementById("update-type_menu").value;
+    const url = document.getElementById("update-url").value;
+
+    fetch(`/gestiondata/api/menus/${id}/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({
+        list_Menu,
+        extension,
+        type_menu,
+        Url: url,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        alert("Menu mis à jour !");
+      });
+  }
+
+  function deleteMenu() {
+    const id = document.getElementById("delete-id").value;
+
+    fetch(`/gestiondata/api/menus/${id}/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        alert("Menu supprimé !");
+      });
+  }
+</script>
+{% endblock %}

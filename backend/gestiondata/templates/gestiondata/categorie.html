@@ -1,0 +1,28 @@
+{% extends "gestiondata/layout.html" %} {% block body %}
+<h1>Créer une Catégorie</h1>
+
+<input type="text" id="name_cat" placeholder="Nom de la catégorie" />
+
+<button onclick="createCategorie()">Create Categorie</button>
+
+<script>
+  function createCategorie() {
+    const name_cat = document.getElementById("name_cat").value;
+
+    fetch("/gestiondata/create_categorie/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({ name_cat }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        alert("Catégorie créée !");
+      })
+      .catch((err) => console.error("Erreur:", err));
+  }
+</script>
+{% endblock %}

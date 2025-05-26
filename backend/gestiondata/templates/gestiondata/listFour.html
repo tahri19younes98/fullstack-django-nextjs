@@ -1,0 +1,48 @@
+{% extends "gestiondata/layout.html" %} {% block body %}
+<h1>Liste des Fournisseurs</h1>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Localisation</th>
+      <th>Address</th>
+      <th>Type</th>
+      <th>Domaine</th>
+      <th>Phone</th>
+      <th>Email</th>
+      <th>ART</th>
+      <th>NIS</th>
+      <th>NIF</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for fournisseur in fournisseurs %}
+    <tr>
+      <td>{{ fournisseur.name }}</td>
+      <td>{{ fournisseur.localisation }}</td>
+      <td>{{ fournisseur.address }}</td>
+      <td>{{ fournisseur.type }}</td>
+      <td>{{ fournisseur.domaine }}</td>
+      <td>{{ fournisseur.phone }}</td>
+      <td>{{ fournisseur.email }}</td>
+      <td>{{ fournisseur.art }}</td>
+      <td>{{ fournisseur.nis }}</td>
+      <td>{{ fournisseur.nif }}</td>
+    </tr>
+    <!--   <button onclick="updateFournisseur()" id="update-id">Update</button>
+    <button onclick="deleteFournisseur()" id="delete-id">Delete</button>-->
+    {% empty %}
+    <tr>
+      <td colspan="10">Aucun fournisseur trouvé.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'gestiondata:fournisseur' %}">Retour</a>
+<!-- <script>
+
+
+</script>-->
+
+{% endblock %}
