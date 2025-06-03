@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class Fournisseur(models.Model):
+class Fournisseur(models.Model): # <----- this our client not fournisseur as u think 
     name = models.CharField(max_length=100)
     localisation = models.CharField(max_length=100)
     address = models.TextField()
@@ -18,6 +18,36 @@ class Fournisseur(models.Model):
     def __str__(self):
         return self.name
 
+class Fournisseur_fournisseur(models.Model): # <------- this fournisseur of our client  
+    name = models.CharField(max_length=100)
+    localisation = models.CharField(max_length=100)
+    address = models.TextField()
+    type = models.IntegerField()
+    domaine = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    email = models.EmailField()
+    art = models.CharField(max_length=100)
+    nis = models.CharField(max_length=20)
+    nif = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+    
+class Fournisseur_client(models.Model): # <------ this is our simple client who can buy in resturent 
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    email = models.EmailField()
+     
+
+    def __str__(self):
+        return self.name
+
+
+class List_Fournisseur_Client(models.Model):
+    id_fournisseur_client = models.ManyToManyField(Fournisseur_client)
+    id_fournisseur = models.ManyToManyField(Fournisseur)
+
+
 class Domain(models.Model):
     name = models.CharField(max_length=100)
     fournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)
@@ -29,8 +59,9 @@ class Domain(models.Model):
 class Fr_Dom(models.Model):
       id_f = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)
       id_d = models.ForeignKey(Domain,  on_delete=models.CASCADE)
-      def __str__(self):
-          return self.id_f ,self.id_d
+      nom_domain = models.CharField(max_length=100,default='Unknown') # <--------- i add new attribute 
+      def __str__(self): 
+          return  f"{self.id_f} - {self.id_d}"
 
 
 class TypeFr(models.Model):

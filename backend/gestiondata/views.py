@@ -320,3 +320,6 @@ def get_typemenus_and_urls(request):
     urls = list(Url.objects.all().values("id", "name_url"))
     return JsonResponse({"typemenus": typemenus, "urls": urls})
 
+
+
+
