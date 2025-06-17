@@ -1,0 +1,49 @@
+{% extends "gestiondata/layout.html" %} {% block body %}
+<h1>Liste des Client</h1>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Localisation</th>
+      <th>Address</th>
+      <th>Type</th>
+      <th>Domaine</th>
+      <th>Phone</th>
+      <th>Email</th>
+      <th>ART</th>
+      <th>NIS</th>
+      <th>NIF</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for client in clients %}
+    <tr>
+      <td>{{ client.name }}</td>
+      <td>{{ client.localisation }}</td>
+      <td>{{ client.address }}</td>
+      <td>{{ client.type }}</td>
+      <td>{{ client.domaine }}</td>
+      <td>{{ client.phone }}</td>
+      <td>{{ client.email }}</td>
+      <td>{{ client.art }}</td>
+      <td>{{ client.nis }}</td>
+      <td>{{ client.nif }}</td>
+    </tr>
+    {% empty %}
+    <!-- If no clients are found, display this row -->
+
+    <tr>
+      <td colspan="10">Aucun fournisseur trouvé.</td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'gestiondata:client_page' %}">Retour</a>
+<!-- <script>
+
+
+</script>-->
+
+{% endblock %}

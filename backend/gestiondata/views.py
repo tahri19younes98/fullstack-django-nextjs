@@ -73,14 +73,14 @@ class etablissement_clientDetailView(APIView):
         )
 
 
-def liste_fournisseurs(request):
+def liste_clients(request):
     clients = etablissement_client.objects.all()
     serializer = etablissement_clientSerializer(clients, many=True)
-    return render(request, "gestiondata/listFour.html", {"clients": serializer.data})
+    return render(request, "gestiondata/listClients.html", {"clients": serializer.data})
 
 
-def Fournisseurpage(request):
-    return render(request, "gestiondata/fournisseur.html")
+def Clientpage(request):
+    return render(request, "gestiondata/client.html")
 
 #----------------------------------Etablissement Fournisseur-------#--------------------------------------
 class etablissement_fournisseurListCreateView(APIView):

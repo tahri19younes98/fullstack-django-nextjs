@@ -5,7 +5,7 @@ app_name = "gestiondata"
  
 urlpatterns = [  
  # Pages
-    path("fournisseur", views.Fournisseurpage, name="fournisseur"),
+    path("clientpage", views.Clientpage, name="client_page"),
     path("menu", views.menu_page, name="menu_page"),
     path("articles", views.articles_page, name="articles_page"), 
     path("url", views.url_page, name="url_page"),
@@ -15,7 +15,7 @@ urlpatterns = [
     path("FournisseurClient", views.fournisseur_client_page, name="fournisseur_client_page"),
 
     # List view (HTML)
-    path('fournisseurs/', views.liste_fournisseurs, name='liste_fournisseurs'),
+    path('clients/', views.liste_clients, name='liste_clients'),
 
     # REST API ENDPOINTS for Etablissement_client
     path("api/etablissementClient/", views.etablissement_clientListCreateView.as_view(), name="fournisseur_list"),
