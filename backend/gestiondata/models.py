@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class Fournisseur(models.Model): # <----- this our client not fournisseur as u think 
+class etablissement_client(models.Model): # <----- this our client not fournisseur as u think 
     name = models.CharField(max_length=100)
     localisation = models.CharField(max_length=100)
     address = models.TextField()
@@ -18,7 +18,7 @@ class Fournisseur(models.Model): # <----- this our client not fournisseur as u t
     def __str__(self):
         return self.name
 
-class Fournisseur_fournisseur(models.Model): # <------- this fournisseur of our client  
+class etablissement_fournisseur(models.Model): # <------- this fournisseur of our client  
     name = models.CharField(max_length=100)
     localisation = models.CharField(max_length=100)
     address = models.TextField()
@@ -33,7 +33,7 @@ class Fournisseur_fournisseur(models.Model): # <------- this fournisseur of our 
     def __str__(self):
         return self.name
     
-class Fournisseur_client(models.Model): # <------ this is our simple client who can buy in resturent 
+class etablissement_client_simple(models.Model): # <------ this is our simple client who can buy in restaurent 
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
@@ -43,21 +43,21 @@ class Fournisseur_client(models.Model): # <------ this is our simple client who 
         return self.name
 
 
-class List_Fournisseur_Client(models.Model):
-    id_fournisseur_client = models.ManyToManyField(Fournisseur_client)
-    id_fournisseur = models.ManyToManyField(Fournisseur)
+class List_Client_ClientSimple(models.Model):
+    id_client_simple = models.ManyToManyField(etablissement_client_simple)
+    id_client = models.ManyToManyField(etablissement_client)
 
 
 class Domain(models.Model):
     name = models.CharField(max_length=100)
-    fournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)
+    fournisseur = models.ForeignKey(etablissement_client, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.name} (Fournisseur: {self.fournisseur.name})"
 
 
 class Fr_Dom(models.Model):
-      id_f = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)
+      id_f = models.ForeignKey(etablissement_client, on_delete=models.CASCADE)
       id_d = models.ForeignKey(Domain,  on_delete=models.CASCADE)
       nom_domain = models.CharField(max_length=100,default='Unknown') # <--------- i add new attribute 
       def __str__(self): 
@@ -66,14 +66,14 @@ class Fr_Dom(models.Model):
 
 class TypeFr(models.Model):
     name = models.CharField(max_length=100)
-    id_fournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)
+    id_fournisseur = models.ForeignKey(etablissement_client, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
 class Url(models.Model):
      name_url =  models.CharField(max_length=100)
-     four_url = models.ForeignKey(Fournisseur, on_delete=models.CASCADE, related_name='urls')
+     four_url = models.ForeignKey(etablissement_client, on_delete=models.CASCADE, related_name='urls')
      
 
      def __str__(self):

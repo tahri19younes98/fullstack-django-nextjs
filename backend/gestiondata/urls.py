@@ -2,8 +2,8 @@ from django.urls import path
 from . import views
 
 app_name = "gestiondata"
-
-urlpatterns = [
+ 
+urlpatterns = [  
  # Pages
     path("fournisseur", views.Fournisseurpage, name="fournisseur"),
     path("menu", views.menu_page, name="menu_page"),
@@ -11,13 +11,21 @@ urlpatterns = [
     path("url", views.url_page, name="url_page"),
     path("typemenu", views.typemenu_page, name="typemenu_page"),  
     path("categorie/", views.categorie_page, name="categorie_page"),
+    path("FournisseurFournisseur", views.fournisseur_fournisseur_page, name="fournisseur_fournisseur_page"),
+    path("FournisseurClient", views.fournisseur_client_page, name="fournisseur_client_page"),
 
     # List view (HTML)
     path('fournisseurs/', views.liste_fournisseurs, name='liste_fournisseurs'),
 
-    # REST API ENDPOINTS for Fournisseur
-    path("api/fournisseurs/", views.FournisseurListCreateView.as_view(), name="fournisseur_list"),
-    path("api/fournisseurs/<int:pk>/", views.FournisseurDetailView.as_view(), name="fournisseur_detail"),
+    # REST API ENDPOINTS for Etablissement_client
+    path("api/etablissementClient/", views.etablissement_clientListCreateView.as_view(), name="fournisseur_list"),
+    path("api/etablissementClient/<int:pk>/", views.etablissement_clientDetailView.as_view(), name="fournisseur_detail"),
+    # REST API ENDPOINTS for Fournisseur_fournisseur
+    path("api/etablissement_fournisseur/", views.etablissement_fournisseurListCreateView.as_view(), name="fournisseur_fournisseur_list"),
+    path("api/etablissement_fournisseur/<int:pk>/", views.etablissement_fournisseurDetailView.as_view(), name="fournisseur_fournisseur_detail"),
+    # REST API ENDPOINTS for Fournisseur_client
+    path("api/etablissement_client_simple/", views.etablissement_client_simpleListCreateView.as_view(), name="fournisseur_client_list"),
+    path("api/etablissement_client_simple/<int:pk>/", views.etablissement_client_simpleDetailView.as_view(), name="fournisseur_client_detail"),
     # REST API ENDPOINTS for Menu
     path("api/menus/", views.MenuListCreateView.as_view(), name="menu_list"),
     path("api/menus/<int:pk>/", views.MenuDetailView.as_view(), name="menu_detail"),

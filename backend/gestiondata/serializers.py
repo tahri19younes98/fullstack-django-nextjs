@@ -1,10 +1,21 @@
 from rest_framework import serializers
 
-from .models import Fournisseur, Menu, Articles, TypeMenu, Url, Categorie
+from .models import etablissement_client, etablissement_fournisseur,etablissement_client_simple,Menu, Articles, TypeMenu, Url, Categorie
 
-class FournisseurSerializer(serializers.ModelSerializer):
+class etablissement_clientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Fournisseur
+        model = etablissement_client
+        fields = '__all__'
+
+
+class etablissement_fournisseurSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = etablissement_fournisseur
+        fields = '__all__'
+
+class etablissement_client_simpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = etablissement_client_simple
         fields = '__all__'
 
 
@@ -33,3 +44,5 @@ class CategorieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categorie
         fields = '__all__'
+
+

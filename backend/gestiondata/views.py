@@ -1,87 +1,212 @@
 import json
 from django.http import JsonResponse
 from django.shortcuts import render
-from gestiondata.models import Fournisseur,Menu,Articles,TypeMenu,Url,Categorie
+from gestiondata.models import etablissement_client, Menu, Articles, TypeMenu, Url, Categorie, etablissement_fournisseur, etablissement_client_simple
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import FournisseurSerializer, MenuSerializer, ArticlesSerializer, TypeMenuSerializer, UrlSerializer, CategorieSerializer
+from .serializers import etablissement_clientSerializer, MenuSerializer, ArticlesSerializer, TypeMenuSerializer, UrlSerializer, CategorieSerializer, etablissement_fournisseurSerializer, etablissement_client_simpleSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
  
-
-#----------------------------------Fournisseur----#--------------------------------------
+# 
+#----------------------------------Etablissement Client----#--------------------------------------
 # class based views
 # List and Create == GET and POST
-class FournisseurListCreateView(APIView):
+class etablissement_clientListCreateView(APIView):
     def get(self, request):
         format = request.query_params.get('format', 'full')
-        fournisseurs = Fournisseur.objects.all()
+        clients = etablissement_client.objects.all()
         if format == 'minimal':
-            data = [{'id': f.id, 'name': f.name} for f in fournisseurs]
+            data = [{'id': c.id, 'name': c.name} for c in clients]
             return Response(data)
         
-        serializer = FournisseurSerializer(fournisseurs, many=True)
+        serializer = etablissement_clientSerializer(clients, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = FournisseurSerializer(data=request.data)
+        serializer = etablissement_clientSerializer(data=request.data)
         if serializer.is_valid():
-            fournisseur = serializer.save()
-            return Response({"message": "Fournisseur created", "id": fournisseur.id}, status=201)
+            client = serializer.save()
+            return Response({"message": "Fournisseur created", "id": client.id}, status=201)
         return Response(serializer.errors, status=400)
 
 # Retrieve, Update and Delete == GET, PUT and DELETE
-class FournisseurDetailView(APIView):
+class etablissement_clientDetailView(APIView):
     def get_object(self, pk):
         try:
-            return Fournisseur.objects.get(pk=pk)
-        except Fournisseur.DoesNotExist:
+            return etablissement_client.objects.get(pk=pk)
+        except etablissement_client.DoesNotExist:
             return None
 
     def get(self, pk):
-        fournisseur = self.get_object(pk)
-        if not fournisseur:
-            return Response({"error": "Fournisseur not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = FournisseurSerializer(fournisseur)
+        client = self.get_object(pk)
+        if not client:
+            return Response({"error": "client not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = etablissement_clientSerializer(client)
         return Response(serializer.data)
 
     def put(self, request, pk):
-        fournisseur = self.get_object(pk)
-        if not fournisseur:
-            return Response({"error": "Fournisseur not found"}, status=status.HTTP_404_NOT_FOUND)
+        client = self.get_object(pk)
+        if not client:
+            return Response({"error": "client not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = FournisseurSerializer(fournisseur, data=request.data)
+        serializer = etablissement_clientSerializer(client, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Fournisseur updated"})
+            return Response({"message": "client updated"})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        fournisseur = self.get_object(pk)
-        if not fournisseur:
+        client = self.get_object(pk)
+        if not client:
             return Response(
-                {"error": "Fournisseur not found"},
+                {"error": "client not found"},
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        fournisseur.delete()
+        client.delete()
         return Response(
-            {"message": "Fournisseur deleted successfully"},
+            {"message": "client deleted successfully"},
             status=status.HTTP_200_OK  # Or HTTP_204_NO_CONTENT if you prefer
         )
 
 
 def liste_fournisseurs(request):
-    fournisseurs = Fournisseur.objects.all()
-    serializer = FournisseurSerializer(fournisseurs, many=True)
-    return render(request, "gestiondata/listFour.html", {"fournisseurs": serializer.data})
+    clients = etablissement_client.objects.all()
+    serializer = etablissement_clientSerializer(clients, many=True)
+    return render(request, "gestiondata/listFour.html", {"clients": serializer.data})
 
 
 def Fournisseurpage(request):
     return render(request, "gestiondata/fournisseur.html")
 
+#----------------------------------Etablissement Fournisseur-------#--------------------------------------
+class etablissement_fournisseurListCreateView(APIView):
+    def get(self, request):
+        format = request.query_params.get('format', 'full')
+        fournisseurs_fournisseur = etablissement_fournisseur.objects.all()
+        if format == 'minimal':
+            data = [{'id': ff.id, 'name': ff.name} for ff in fournisseurs_fournisseur]
+            return Response(data)
+        
+        serializer = etablissement_fournisseurSerializer(fournisseurs_fournisseur, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = etablissement_fournisseurSerializer(data=request.data)
+        if serializer.is_valid():
+            fournisseur_fournisseur = serializer.save()
+            return Response({"message": "Fournisseur-Fournisseur created", "id": fournisseur_fournisseur.id}, status=201)
+        return Response(serializer.errors, status=400)
+
+# Retrieve, Update and Delete == GET, PUT and DELETE
+class etablissement_fournisseurDetailView(APIView):
+    def get_object(self, pk):
+        try:
+            return etablissement_fournisseur.objects.get(pk=pk)
+        except etablissement_fournisseur.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        fournisseur = self.get_object(pk)
+        if not fournisseur:
+            return Response({"error": "Fournisseur-Fournisseur not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = etablissement_fournisseurSerializer(fournisseur)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        fournisseur = self.get_object(pk)
+        if not fournisseur:
+            return Response({"error": "Fournisseur-Fournisseur not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = etablissement_fournisseurSerializer(fournisseur, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Fournisseur-Fournisseur updated"})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        fournisseur = self.get_object(pk)
+        if not fournisseur:
+            return Response(
+                {"error": "Fournisseur-Fournisseur not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        fournisseur.delete()
+        return Response(
+            {"message": "Fournisseur-Fournisseur deleted successfully"},
+            status=status.HTTP_200_OK
+        )
+
+def fournisseur_fournisseur_page(request):
+    return render(request, "gestiondata/FournisseurFournisseur.html")
+
+
+#----------------------------------etablissement_client_simple-------#--------------------------------------
+
+class etablissement_client_simpleListCreateView(APIView):
+    def get(self, request):
+        format = request.query_params.get('format', 'full')
+        fournisseurs_client = etablissement_client_simple.objects.all()
+        if format == 'minimal':
+            data = [{'id': fc.id, 'name': fc.name} for fc in fournisseurs_client]
+            return Response(data)
+        
+        serializer = etablissement_client_simpleSerializer(fournisseurs_client, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = etablissement_client_simpleSerializer(data=request.data)
+        if serializer.is_valid():
+            fournisseur_client = serializer.save()
+            return Response({"message": "Fournisseur-Client created", "id": fournisseur_client.id}, status=201)
+        return Response(serializer.errors, status=400)
+
+# Retrieve, Update and Delete == GET, PUT and DELETE
+class etablissement_client_simpleDetailView(APIView):
+    def get_object(self, pk):
+        try:
+            return etablissement_client_simple.objects.get(pk=pk)
+        except etablissement_client_simple.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        fournisseur_client = self.get_object(pk)
+        if not fournisseur_client:
+            return Response({"error": "Fournisseur-Client not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = etablissement_client_simpleSerializer(fournisseur_client)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        fournisseur_client = self.get_object(pk)
+        if not fournisseur_client:
+            return Response({"error": "Fournisseur-Client not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = etablissement_client_simpleSerializer(fournisseur_client, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Fournisseur-Client updated"})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        fournisseur_client = self.get_object(pk)
+        if not fournisseur_client:
+            return Response(
+                {"error": "Fournisseur-Client not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        fournisseur_client.delete()
+        return Response(
+            {"message": "Fournisseur-Client deleted successfully"},
+            status=status.HTTP_200_OK
+        )
+    
+def fournisseur_client_page(request):
+    return render(request, "gestiondata/FournisseurClient.html")
 
 
 #-------------------------------Menu-------#--------------------------------------

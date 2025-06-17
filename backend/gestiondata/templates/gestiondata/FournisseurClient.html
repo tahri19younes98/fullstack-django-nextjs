@@ -1,56 +1,37 @@
 {% extends "gestiondata/layout.html" %} {% block body %}
-<h1>Client</h1>
-<h2>Create Client</h2>
+<h1>Simple Client</h1>
+<h2>Create Simple Client</h2>
 <input type="text" id="name" placeholder="name" />
-<input type="text" id="localisation" placeholder="localisation" />
-<input type="text" id="address" placeholder="address" />
-<input type="text" id="type" placeholder="type" />
-<input type="text" id="domaine" placeholder="domaine" />
 <input type="text" id="phone" placeholder="phone" />
 <input type="text" id="email" placeholder="email" />
-<input type="text" id="art" placeholder="art" />
-<input type="text" id="nis" placeholder="nis" />
-<input type="text" id="nif" placeholder="nif" />
-<button onclick="createFournisseur()">Create</button>
+
+<button onclick="createFC()">Create</button>
 <br />
-<h2>Update Client</h2>
-<input type="number" id="update-id" placeholder="Fournisseur ID" />
+<h2>Update Simple Client</h2>
+<input type="number" id="update-id" placeholder="FournisseurClient ID" />
 <input type="text" id="update-name" placeholder="name" />
-<input type="text" id="update-localisation" placeholder="localisation" />
-<input type="text" id="update-address" placeholder="address" />
-<input type="text" id="update-type" placeholder="type" />
-<input type="text" id="update-domaine" placeholder="domaine" />
 <input type="text" id="update-phone" placeholder="phone" />
 <input type="text" id="update-email" placeholder="email" />
-<input type="text" id="update-art" placeholder="art" />
-<input type="text" id="update-nis" placeholder="nis" />
-<input type="text" id="update-nif" placeholder="nif" />
-<button onclick="updateFournisseur()">Update</button>
+
+<button onclick="updateFC()">Update</button>
 
 <br />
-<h2>Delete Client</h2>
-<input type="number" id="delete-id" placeholder="Fournisseur ID" />
-<button onclick="deleteFournisseur()">Delete</button>
+<h2>Delete Simple Client</h2>
+<input type="number" id="delete-id" placeholder="FournisseurClient ID" />
+<button onclick="deleteFC()">Delete</button>
 
 <br />
 <br />
-<a href="fournisseurs/">Afficher la liste</a>
+
 <script>
-  function createFournisseur() {
+  function createFC() {
     const data = {
       name: document.getElementById("name").value,
-      localisation: document.getElementById("localisation").value,
-      address: document.getElementById("address").value,
-      type: document.getElementById("type").value,
-      domaine: document.getElementById("domaine").value,
       phone: document.getElementById("phone").value,
       email: document.getElementById("email").value,
-      art: document.getElementById("art").value,
-      nis: document.getElementById("nis").value,
-      nif: document.getElementById("nif").value,
     };
 
-    fetch("/gestiondata/api/etablissementClient/", {
+    fetch("/gestiondata/api/etablissement_client_simple/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,22 +45,16 @@
       });
   }
 
-  function updateFournisseur() {
+  function updateFC() {
     const id = document.getElementById("update-id").value;
     const data = {
       name: document.getElementById("update-name").value,
-      localisation: document.getElementById("update-localisation").value,
-      address: document.getElementById("update-address").value,
-      type: document.getElementById("update-type").value,
-      domaine: document.getElementById("update-domaine").value,
+
       phone: document.getElementById("update-phone").value,
       email: document.getElementById("update-email").value,
-      art: document.getElementById("update-art").value,
-      nis: document.getElementById("update-nis").value,
-      nif: document.getElementById("update-nif").value,
     };
 
-    fetch(`/gestiondata/api/etablissementClient/${id}/`, {
+    fetch(`/gestiondata/api/etablissement_client_simple/${id}/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -93,7 +68,7 @@
       });
   }
 
-  function deleteFournisseur() {
+  function deleteFC() {
     const id = document.getElementById("delete-id").value;
 
     if (!id) {
@@ -101,7 +76,7 @@
       return;
     }
 
-    fetch(`/gestiondata/api/etablissementClient/${id}/`, {
+    fetch(`/gestiondata/api/etablissement_client_simple/${id}/`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -127,4 +102,5 @@
       });
   }
 </script>
+
 {% endblock %}
