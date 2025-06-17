@@ -141,8 +141,8 @@ class etablissement_fournisseurDetailView(APIView):
             status=status.HTTP_200_OK
         )
 
-def fournisseur_fournisseur_page(request):
-    return render(request, "gestiondata/FournisseurFournisseur.html")
+def fournisseur_page(request):
+    return render(request, "gestiondata/fournisseur.html")
 
 
 #----------------------------------etablissement_client_simple-------#--------------------------------------
@@ -205,8 +205,8 @@ class etablissement_client_simpleDetailView(APIView):
             status=status.HTTP_200_OK
         )
     
-def fournisseur_client_page(request):
-    return render(request, "gestiondata/FournisseurClient.html")
+def client_simple(request):
+    return render(request, "gestiondata/clientsimple.html")
 
 
 #-------------------------------Menu-------#--------------------------------------

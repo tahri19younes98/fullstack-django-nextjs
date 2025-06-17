@@ -11,9 +11,9 @@ urlpatterns = [
     path("url", views.url_page, name="url_page"),
     path("typemenu", views.typemenu_page, name="typemenu_page"),  
     path("categorie/", views.categorie_page, name="categorie_page"),
-    path("FournisseurFournisseur", views.fournisseur_fournisseur_page, name="fournisseur_fournisseur_page"),
-    path("FournisseurClient", views.fournisseur_client_page, name="fournisseur_client_page"),
-
+    path("Fournisseur", views.fournisseur_page, name="fournisseur_fournisseur_page"),
+    path("clientsimple", views.client_simple, name="client_simple"),
+  
     # List view (HTML)
     path('clients/', views.liste_clients, name='liste_clients'),
 
