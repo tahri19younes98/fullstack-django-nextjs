@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class etablissement_client(models.Model): # <----- this our client not fournisseur as u think 
+class etablissement_client(models.Model):
     name = models.CharField(max_length=100)
     localisation = models.CharField(max_length=100)
     address = models.TextField()
@@ -18,7 +18,7 @@ class etablissement_client(models.Model): # <----- this our client not fournisse
     def __str__(self):
         return self.name
 
-class etablissement_fournisseur(models.Model): # <------- this fournisseur of our client  
+class etablissement_fournisseur(models.Model): 
     name = models.CharField(max_length=100)
     localisation = models.CharField(max_length=100)
     address = models.TextField()
@@ -33,7 +33,7 @@ class etablissement_fournisseur(models.Model): # <------- this fournisseur of ou
     def __str__(self):
         return self.name
     
-class etablissement_client_simple(models.Model): # <------ this is our simple client who can buy in restaurent 
+class etablissement_client_simple(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
@@ -96,8 +96,13 @@ class Articles(models.Model):
     price = models.FloatField()
     code_barre = models.BigIntegerField()
     Categorie = models.ForeignKey('Categorie', on_delete=models.CASCADE,related_name='articles')
+    qte = models.IntegerField(default=0)
+    image = models.CharField(max_length=500, blank=True, null=True)
     def __str__(self):
         return self.name,self.price,self.code_barre
+
+
+    
 
 
 class Menu_Article(models.Model):
@@ -135,4 +140,197 @@ class Sfamille(models.Model):
     name_sfam = models.CharField(max_length=100)
     def __str__(self):
         return self.id_fm
+
+
+#----------------------------------new models----------------------------------#
+
+class code_barre(models.Model):
+    code = models.BigIntegerField(unique=True)
+    article = models.ForeignKey(Articles, on_delete=models.CASCADE, related_name='codes_barre')
+   # user = models.IntegerField(default=0)  # Assuming this is for tracking the user who created the code 
+    def __str__(self):
+        return str(self.code)
+    
+
+class Charges(models.Model): 
+    designation = models.CharField(max_length=50, blank=True, null=True)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+    date = models.DateTimeField(blank=True, null=True)
+    periode = models.DecimalField(max_digits=19, decimal_places=0, blank=True, null=True)
+   # user = models.IntegerField(default=0)
+    def __str__(self):
+        return f"{self.designation} - {self.montant} - {self.date}"
+    
+
+
+class Devis(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+    numeros = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.date} - {self.propreot} - {self.montant} - {self.numeros}"
+    
+
+class FamilleCharges(models.Model):
+   # idFamille = models.ForeignKey(Famille, on_delete=models.CASCADE, related_name='famille_charges')
+    nom = models.CharField(max_length=100)
+    codif = models.CharField(max_length=100)
+    image = models.CharField(max_length=500, blank=True, null=True)
+    #user = models.IntegerField(default=0)    
+    def __str__(self):
+        return self.nom
+    
+class FamilleFournisseur(models.Model):
+    # idFamille = models.ForeignKey(Famille, on_delete=models.CASCADE, related_name='famille_fournisseur')
+    nom = models.CharField(max_length=100)
+    codif = models.CharField(max_length=100)
+    image = models.CharField(max_length=500, blank=True, null=True)
+    #user = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.nom
+    
+
+class FamilleClients(models.Model):
+    # idFamille = models.ForeignKey(Famille, on_delete=models.CASCADE, related_name='famille_clients')
+    nom = models.CharField(max_length=100)
+    codif = models.CharField(max_length=100)
+    image = models.CharField(max_length=500, blank=True, null=True)
+    #user = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.nom
+    
+class FamilleProduction(models.Model):
+    # idFamille = models.ForeignKey(Famille, on_delete=models.CASCADE, related_name='famille_production')
+    nom = models.CharField(max_length=100)
+    codif = models.CharField(max_length=100)
+    image = models.CharField(max_length=500, blank=True, null=True)
+    #user = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.nom
+    
+
+#------------------------------------separate models----------------------------------#
+
+class LigneBonArtIn(models.Model):
+   # id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+   # user = models.IntegerField(default=0)
+    nbrcolis = models.IntegerField(default=0)
+
+class LigneBonArtOut(models.Model):
+  #  id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  user = models.IntegerField(default=0)
+    nbrcolis = models.IntegerField(default=0)
+    prix_achat = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+
+class LigneBonCmd(models.Model):
+  #  id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  user = models.IntegerField(default=0)
+    nbrcolis = models.IntegerField(default=0)
+
+class LigneBonEntreeStock(models.Model):
+  #  id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  user = models.IntegerField(default=0)
+    nbrcolis = models.IntegerField(default=0)
+
+class LigneBonLiv(models.Model):
+  #  id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  # user = models.IntegerField(default=0)
+    nbrcolis = models.IntegerField(default=0)
+
+class LigneBonSortieStock(models.Model):
+  #  id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  user = models.IntegerField(default=0)
+    nbrcolis = models.IntegerField(default=0)
+
+class LigneBonTransfertIn(models.Model):
+  #  id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  user = models.IntegerField(default=0)
+
+class LigneBonTransfertOut(models.Model):
+  #  id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  user = models.IntegerField(default=0)
+
+class LigneDevis(models.Model):
+  #  id_bon = models.IntegerField(default=0)
+    art = models.IntegerField(default=0)
+    qte = models.IntegerField(default=0)
+    prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  # user = models.IntegerField(default=0)
+    nbrcolis = models.IntegerField(default=0)
+
+class MatierePremiere(models.Model):
+    article = models.CharField(max_length=50)
+    code_barre = models.CharField(max_length=13)
+    famille = models.IntegerField(default=0)
+    image = models.CharField(max_length=500, blank=True, null=True)
+    TVA = models.IntegerField(default=0)
+    user = models.IntegerField(default=0)
+    price = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+   # Prix_achat_last = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+   # prix_vente = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+   # prix_min = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+   # PMP_encours = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+    qte = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.article
+    
+class RecetteProduction(models.Model):
+    idart = models.ForeignKey(Articles, on_delete=models.CASCADE)
+    idmatierepremier = models.ForeignKey(MatierePremiere, on_delete=models.CASCADE)
+    qte = models.IntegerField(default=0)
+    prix_revient = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+    qteresultat = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.idart} - {self.idmatierepremier} - {self.qte} - {self.prix_revient} - {self.qteresultat}"
+    
+
+class Stock(models.Model):
+    qte = models.IntegerField(default=0)
+    idart = models.ForeignKey(Articles, on_delete=models.CASCADE)
+   # user = models.IntegerField(default=0)
+
+
+    def __str__(self):
+        return f"{self.idart} - {self.qte}"
+    
+
+class StockMatierePremiere(models.Model):
+    qte = models.IntegerField(default=0)
+    idart = models.ForeignKey(MatierePremiere, on_delete=models.CASCADE)
+   # user = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.idart} - {self.qte}"
+    
 

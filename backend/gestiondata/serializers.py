@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import etablissement_client, etablissement_fournisseur,etablissement_client_simple,Menu, Articles, TypeMenu, Url, Categorie
+from .models import Famille, FamilleCharges, FamilleClients, FamilleFournisseur, FamilleProduction, LigneBonArtIn, LigneBonArtOut, LigneBonCmd, LigneBonEntreeStock, LigneBonLiv, LigneBonSortieStock, LigneBonTransfertIn, LigneBonTransfertOut, LigneDevis, MatierePremiere, RecetteProduction, Stock, StockMatierePremiere, etablissement_client, etablissement_fournisseur,etablissement_client_simple,Menu, Articles, TypeMenu, Url, Categorie, Charges, Devis
 
 class etablissement_clientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,4 +45,114 @@ class CategorieSerializer(serializers.ModelSerializer):
         model = Categorie
         fields = '__all__'
 
+#-------------------------------new serializers--------------------------------
+class FamilleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Famille
+        fields = '__all__'
 
+class ChargesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Charges
+        fields = '__all__'
+
+
+class DevisSerializer(serializers.Serializer):
+    class Meta:
+        model = Devis
+        fields = '__all__'
+
+class FamilleChargesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FamilleCharges
+        fields = '__all__'
+
+class FamilleFournisseurSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FamilleFournisseur
+        fields = '__all__'
+
+class FamilleClientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FamilleClients
+        fields = '__all__'
+
+
+class FamilleProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FamilleProduction
+        fields = '__all__'
+
+class MatierePremiereSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MatierePremiere
+        fields = '__all__'
+
+
+class RectteProductionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecetteProduction
+        fields = '__all__'
+
+class StockSerializer(serializers.Serializer):
+    class Meta:
+        model = Stock
+        fields = '__all__'
+
+class StockMatierePremiereSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockMatierePremiere
+        fields = '__all__'
+
+
+class LigneBonArtInSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneBonArtIn
+        fields = '__all__'
+
+class LigneBonArtOutSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneBonArtOut
+        fields = '__all__'
+
+class LigneBonCmdSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneBonCmd
+        fields = '__all__'
+
+class LigneBonEntreeStockSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneBonEntreeStock
+        fields = '__all__'
+
+class LigneBonLivSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneBonLiv
+        fields = '__all__'
+
+class LigneBonSortieStockSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneBonSortieStock
+        fields = '__all__'
+
+class LigneBonTransfertInSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneBonTransfertIn
+        fields = '__all__'
+
+class LigneBonTransfertOutSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneBonTransfertOut
+        fields = '__all__'
+
+
+class LigneDevisSerializer(serializers.Serializer):
+    class Meta:
+        model = LigneDevis
+        fields = '__all__'
+
+
+class RecetteProductionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecetteProduction
+        fields = '__all__'
