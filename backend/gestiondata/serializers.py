@@ -89,7 +89,7 @@ class MatierePremiereSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class RectteProductionSerializer(serializers.ModelSerializer):
+class RecetteProductionSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecetteProduction
         fields = '__all__'
@@ -104,6 +104,7 @@ class StockMatierePremiereSerializer(serializers.ModelSerializer):
         model = StockMatierePremiere
         fields = '__all__'
 
+#--------------------------------------LigneBon --------------------------------------
 
 class LigneBonArtInSerializer(serializers.Serializer):
     class Meta:
@@ -152,7 +153,47 @@ class LigneDevisSerializer(serializers.Serializer):
         fields = '__all__'
 
 
-class RecetteProductionSerializer(serializers.ModelSerializer):
+
+#--------------------------------------Bon --------------------------------------
+from .models import BonArtIn, BonArtOut, BonCmd, BonEntreeStock, BonLiv, BonSortieStock, BonTransfertIn, BonTransfertOut
+
+class BonArtInSerializer(serializers.Serializer):
     class Meta:
-        model = RecetteProduction
+        model = BonArtIn
+        fields = '__all__'
+
+class BonArtOutSerializer(serializers.Serializer):
+    class Meta:
+        model = BonArtOut
+        fields = '__all__'
+
+class BonCmdSerializer(serializers.Serializer):
+    class Meta:
+        model = BonCmd
+        fields = '__all__'
+
+class BonEntreeStockSerializer(serializers.Serializer):
+    class Meta:
+        model = BonEntreeStock
+        fields = '__all__'
+
+class BonLivSerializer(serializers.Serializer):
+    class Meta:
+        model = BonLiv
+        fields = '__all__'
+
+class BonSortieStockSerializer(serializers.Serializer):
+    class Meta:
+        model = BonSortieStock
+        fields = '__all__'
+
+
+class BonTransfertInSerializer(serializers.Serializer):
+    class Meta:
+        model = BonTransfertIn
+        fields = '__all__'
+
+class BonTransfertOutSerializer(serializers.Serializer):
+    class Meta:
+        model = BonTransfertOut
         fields = '__all__'
