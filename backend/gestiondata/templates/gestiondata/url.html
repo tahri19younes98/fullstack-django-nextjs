@@ -29,7 +29,7 @@
 <button onclick="deleteUrl()">Delete URL</button>
 
 <script>
-  fetch("/gestiondata/api/fournisseurs/")
+  fetch("/gestiondata/api/etablissement_fournisseur/")
     .then((res) => res.json())
     .then((data) => {
       const select = document.getElementById("four_url");
@@ -42,7 +42,7 @@
     })
     .catch((err) => console.error("Failed to load fournisseurs:", err));
 
-  fetch("/gestiondata/api/fournisseurs/")
+  fetch("/gestiondata/api/etablissement_fournisseur/")
     .then((res) => res.json())
     .then((data) => {
       const select = document.getElementById("update-four_url");

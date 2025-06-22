@@ -436,9 +436,9 @@ def get_categories(request):
     return JsonResponse(list(categories), safe=False)
 
 
-def get_fournisseurs(request):
-    fournisseurs = Fournisseur.objects.all().values("id", "name")
-    return JsonResponse(list(fournisseurs), safe=False)
+#def get_fournisseurs(request):
+#    fournisseurs = Fournisseur.objects.all().values("id", "name")
+#    return JsonResponse(list(fournisseurs), safe=False)
 
 def get_typemenus_and_urls(request):
     typemenus = list(TypeMenu.objects.all().values("id", "name"))
@@ -446,5 +446,5 @@ def get_typemenus_and_urls(request):
     return JsonResponse({"typemenus": typemenus, "urls": urls})
 
 
-
+ 
 

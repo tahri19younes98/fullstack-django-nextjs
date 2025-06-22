@@ -142,7 +142,7 @@ class Sfamille(models.Model):
         return self.id_fm
 
 
-#----------------------------------new models----------------------------------#
+#------------------------------------------------------new models-----------------------------------------------------#
 
 class code_barre(models.Model):
     code = models.BigIntegerField(unique=True)
@@ -161,7 +161,12 @@ class Charges(models.Model):
     def __str__(self):
         return f"{self.designation} - {self.montant} - {self.date}"
     
-
+class ArticleChargesProduction(models.Model):
+    idart = models.ForeignKey(Articles, on_delete=models.CASCADE)
+    idcharges = models.ForeignKey(Charges, on_delete=models.CASCADE)
+    qte = models.IntegerField(default=0)
+    prix_revient = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+    qteresultat = models.IntegerField(default=0)
 
 class Devis(models.Model):
     date = models.DateTimeField()
@@ -172,9 +177,9 @@ class Devis(models.Model):
     def __str__(self):
         return f"{self.date} - {self.propreot} - {self.montant} - {self.numeros}"
     
-
 class FamilleCharges(models.Model):
    # idFamille = models.ForeignKey(Famille, on_delete=models.CASCADE, related_name='famille_charges')
+   # idCharges = models.ForeignKey(Charges, on_delete=models.CASCADE, related_name='famille_charges')
     nom = models.CharField(max_length=100)
     codif = models.CharField(max_length=100)
     image = models.CharField(max_length=500, blank=True, null=True)
@@ -184,6 +189,7 @@ class FamilleCharges(models.Model):
     
 class FamilleFournisseur(models.Model):
     # idFamille = models.ForeignKey(Famille, on_delete=models.CASCADE, related_name='famille_fournisseur')
+    # idFournisseur = models.ForeignKey(etablissement_fournisseur, on_delete=models.CASCADE, related_name='famille_fournisseur')
     nom = models.CharField(max_length=100)
     codif = models.CharField(max_length=100)
     image = models.CharField(max_length=500, blank=True, null=True)
@@ -192,9 +198,9 @@ class FamilleFournisseur(models.Model):
     def __str__(self):
         return self.nom
     
-
 class FamilleClients(models.Model):
     # idFamille = models.ForeignKey(Famille, on_delete=models.CASCADE, related_name='famille_clients')
+    # idClient = models.ForeignKey(etablissement_client, on_delete=models.CASCADE, related_name='famille_clients')
     nom = models.CharField(max_length=100)
     codif = models.CharField(max_length=100)
     image = models.CharField(max_length=500, blank=True, null=True)
@@ -214,19 +220,19 @@ class FamilleProduction(models.Model):
         return self.nom
     
 
-#------------------------------------separate models----------------------------------#
-
+#----------------------------------------------------------separate models-----------------------------------------------------------#
+#-----------------new models 2 , Ligne----------------------#
 class LigneBonArtIn(models.Model):
-   # id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('BonArtIn', on_delete=models.CASCADE, related_name='ligne_bon_art_in', null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
    # user = models.IntegerField(default=0)
     nbrcolis = models.IntegerField(default=0)
 
 class LigneBonArtOut(models.Model):
-  #  id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('BonArtOut', on_delete=models.CASCADE, related_name='ligne_bon_art_out', null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
   #  user = models.IntegerField(default=0)
@@ -234,59 +240,60 @@ class LigneBonArtOut(models.Model):
     prix_achat = models.DecimalField(max_digits=24, decimal_places=6, default=0)
 
 class LigneBonCmd(models.Model):
-  #  id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('BonCmd', on_delete=models.CASCADE, related_name='ligne_bon_cmd', null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
   #  user = models.IntegerField(default=0)
     nbrcolis = models.IntegerField(default=0)
 
 class LigneBonEntreeStock(models.Model):
-  #  id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('BonEntreeStock', on_delete=models.CASCADE, related_name='ligne_bon_entree_stock', null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
   #  user = models.IntegerField(default=0)
     nbrcolis = models.IntegerField(default=0)
 
 class LigneBonLiv(models.Model):
-  #  id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('BonLiv', on_delete=models.CASCADE, related_name='ligne_bon_liv', null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
   # user = models.IntegerField(default=0)
     nbrcolis = models.IntegerField(default=0)
 
 class LigneBonSortieStock(models.Model):
-  #  id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('BonSortieStock', on_delete=models.CASCADE, related_name='ligne_bon_sortie_stock', null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
   #  user = models.IntegerField(default=0)
     nbrcolis = models.IntegerField(default=0)
 
 class LigneBonTransfertIn(models.Model):
-  #  id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('BonTransfertIn', on_delete=models.CASCADE, related_name='ligne_bon_transfert_in', null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
   #  user = models.IntegerField(default=0)
 
 class LigneBonTransfertOut(models.Model):
-  #  id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('BonTransfertOut', on_delete=models.CASCADE, related_name='ligne_bon_transfert_out', null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
   #  user = models.IntegerField(default=0)
 
 class LigneDevis(models.Model):
-  #  id_bon = models.IntegerField(default=0)
-    art = models.IntegerField(default=0)
+    idbon = models.ForeignKey('Devis', on_delete=models.CASCADE, null=True, blank=True)
+    art = models.ForeignKey(Articles, on_delete=models.CASCADE, null=True, blank=True)
     qte = models.IntegerField(default=0)
     prix = models.DecimalField(max_digits=24, decimal_places=6, default=0)
   # user = models.IntegerField(default=0)
     nbrcolis = models.IntegerField(default=0)
 
+#----------------------------------new models ,Matiere et Stock----------------------------------#
 class MatierePremiere(models.Model):
     article = models.CharField(max_length=50)
     code_barre = models.CharField(max_length=13)
@@ -334,3 +341,68 @@ class StockMatierePremiere(models.Model):
         return f"{self.idart} - {self.qte}"
     
 
+#----------------------------------new models 1 , Bon----------------------------------#
+
+class BonArtIn(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  etablissement = models.IntegerField(default=0)
+    numeros = models.CharField(max_length=50, blank=True, null=True)
+  #  user = models.IntegerField(default=0)
+
+class BonArtOut(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  etablissement = models.IntegerField(default=0)
+    numeros = models.CharField(max_length=50, blank=True, null=True)
+  #  user = models.IntegerField(default=0)
+
+class BonCmd(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  etablissement = models.IntegerField(default=0)
+    numeros = models.CharField(max_length=50, blank=True, null=True)
+  #  user = models.IntegerField(default=0)
+
+class BonEntreeStock(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  etablissement = models.IntegerField(default=0)
+    numeros = models.CharField(max_length=50, blank=True, null=True)
+  #  user = models.IntegerField(default=0)
+
+class BonLiv(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  etablissement = models.IntegerField(default=0)
+    numeros = models.CharField(max_length=50, blank=True, null=True)
+  #  user = models.IntegerField(default=0)
+
+class BonSortieStock(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  etablissement = models.IntegerField(default=0)
+    numeros = models.CharField(max_length=50, blank=True, null=True)
+  #  user = models.IntegerField(default=0)
+
+class BonTransfertIn(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  etablissement = models.IntegerField(default=0)
+    numeros = models.CharField(max_length=50, unique=True)
+  #  user = models.IntegerField(default=0)
+
+class BonTransfertOut(models.Model):
+    date = models.DateTimeField()
+    propreot = models.IntegerField(default=0)
+    montant = models.DecimalField(max_digits=24, decimal_places=6, default=0)
+  #  etablissement = models.IntegerField(default=0)
+    numeros = models.CharField(max_length=50, unique=True)
+  #  user = models.IntegerField(default=0)
