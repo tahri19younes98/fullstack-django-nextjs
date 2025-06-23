@@ -16,7 +16,7 @@
       </button>
     </form>
     <br />
-    <a href="{% url 'qrmainpage:index' %}">← Retour</a>
+    <a href="{% url 'qrmainpage:index' %}"> Retour</a>
 
     {% else %}
     <h1>QR Code Generator</h1>
@@ -28,9 +28,26 @@
     <form method="GET">
       <button type="submit" name="menu" value="add">Ajouter votre menu</button>
     </form>
-    {% endif %} {% if qr_image %}
+    {% endif %}
+    <br />
+    {% if qr_image %}
     <h3>Generated QR Code:</h3>
     <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code" />
+
+    <p>
+      🔗 QR URL:
+      <a href="{{ qr_url }}" target="_blank">{{ qr_url }}</a>
+    </p>
+
+    <p>
+      📄
+      <a
+        href="/qrmainpage/download_pdf/?data={{ qr_url }}&filename={{ pdf_filename }}"
+        class="btn btn-primary"
+      >
+        Download PDF
+      </a>
+    </p>
     {% endif %}
   </div>
   <!-- Right Sidebar -->
