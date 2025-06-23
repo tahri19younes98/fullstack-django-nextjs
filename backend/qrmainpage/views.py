@@ -4,9 +4,11 @@ from django.http import HttpResponse
 import qrcode
 import io
 import base64
+import os
 from PIL import Image
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.units import cm
+custom_page_size = (60 * cm, 60 * cm)  # A4 size 
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import cm
 import json
@@ -55,7 +57,7 @@ def save_qr_pdf(data,  filename="qr_code.pdf"):
 
     pdf_buffer = io.BytesIO()
     # Create PDF with A4 page size
-    c = canvas.Canvas(pdf_buffer, pagesize=A4)
+    c = canvas.Canvas(pdf_buffer, pagesize=custom_page_size)
     # Draw QR image at (10cm, 10cm) from bottom-left, with 10cm width/height
     c.drawImage(img_reader, x=10*cm, y=10*cm, width=10*cm, height=10*cm)
 
@@ -71,6 +73,62 @@ def save_qr_pdf(data,  filename="qr_code.pdf"):
     )
 
    
+def append_qr_to_pdf(qr_image):
+    import os
+    import json
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.units import cm
+    from reportlab.lib.utils import ImageReader
+
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    batch_dir = os.path.join(BASE_DIR, 'qrmainpage', 'pdf_batches')
+    state_file = os.path.join(batch_dir, 'qr_batch_state.json')
+    os.makedirs(batch_dir, exist_ok=True)
+
+    # Load or initialize state
+    if os.path.exists(state_file):
+        with open(state_file, 'r') as f:
+            state = json.load(f)
+    else:
+        state = {"current_batch": 1, "current_index": 0}
+
+    index = state["current_index"]
+    batch = state["current_batch"]
+
+    # Prepare folders and paths
+    qr_images_dir = os.path.join(batch_dir, f'batch_{batch}_qr_images')
+    os.makedirs(qr_images_dir, exist_ok=True)
+
+    qr_path = os.path.join(qr_images_dir, f'{index}.png')
+    qr_image.save(qr_path, format='PNG')
+
+    pdf_path = os.path.join(batch_dir, f'qr_batch_{batch}.pdf')
+    custom_page_size = (60 * cm, 60 * cm)
+
+    # Redraw all images for this batch
+    c = canvas.Canvas(pdf_path, pagesize=custom_page_size)
+    for i in range(index + 1):  # includes current QR
+        col = i % 10
+        row = i // 10
+        x = 1 * cm + col * 5 * cm
+        y = custom_page_size[1] - (1 * cm + (row + 1) * 5 * cm)
+        img_path = os.path.join(qr_images_dir, f'{i}.png')
+        if os.path.exists(img_path):
+            c.drawImage(img_path, x, y, width=4.5 * cm, height=4.5 * cm)
+    c.save()
+
+    # ✅ Update state after drawing
+    state["current_index"] += 1
+    if state["current_index"] >= 100:
+        state["current_batch"] += 1
+        state["current_index"] = 0
+
+    with open(state_file, 'w') as f:
+        json.dump(state, f)
+
+    return pdf_path
+
+
 
 
 
@@ -92,8 +150,9 @@ def index(request):
                 #img = qrcode.make(qr_content)
                 #img = generate_qr_image(qr_content)
                
-                filename = f"qr_menu_{random_code}.pdf"
-                img = generate_qr_image(qr_content)
+               # filename = f"qr_menu_{random_code}.pdf"
+                img = generate_qr_image(qr_content)  
+                pdf_path = append_qr_to_pdf(img)
                 buf = io.BytesIO()
                 img.save(buf, format='PNG')
                 qr_image = base64.b64encode(buf.getvalue()).decode()
@@ -104,7 +163,8 @@ def index(request):
                     'file_form': file_form,
                     'qr_image': qr_image,
                     'qr_url': qr_content,
-                    'pdf_filename': filename,
+                    #'pdf_filename': filename,
+                    'pdf_filename': os.path.basename(pdf_path),
                     'pdf_data': qr_content,
                     'show_add_menu': True
                 })
@@ -131,7 +191,7 @@ def index(request):
                         headers={'Content-Disposition': 'attachment; filename="qr_code.jpeg"'})
                 elif action == 'pdf':
                     pdf_buf = io.BytesIO()
-                    c = canvas.Canvas(pdf_buf, pagesize=letter)
+                    c = canvas.Canvas(pdf_buf, pagesize=custom_page_size)
                     image = ImageReader(io.BytesIO(qr_data))
                     c.drawImage(image, 100, 500, width=200, height=200)
                     c.showPage()
