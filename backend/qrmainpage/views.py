@@ -163,6 +163,7 @@ def index(request):
                     'file_form': file_form,
                     'qr_image': qr_image,
                     'qr_url': qr_content,
+                    'random_code': random_code,
                     #'pdf_filename': filename,
                     'pdf_filename': os.path.basename(pdf_path),
                     'pdf_data': qr_content,
