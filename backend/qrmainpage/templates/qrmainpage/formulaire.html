@@ -1,0 +1,320 @@
+{% extends "qrmainpage/layout.html" %} {% load static %} {% block body %}
+<style>
+  /* Add logo styling */
+  .logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .logo {
+    max-width: 300px;
+    height: auto;
+  }
+
+  /*.logo-subtitle {
+    font-family: "Arial", sans-serif;
+    font-size: 18px;
+    color: #2c3e50;
+    letter-spacing: 1.5px;
+    margin-top: 5px;
+  }
+
+  .logo-title {
+    font-family: "Impact", "Arial Black", sans-serif;
+    font-size: 36px;
+    color: #2c3e50;
+    letter-spacing: 3px;
+    margin-bottom: 5px;
+  }*/
+
+  /* Modern Form Styling */
+  .form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  h1.form-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-weight: 600;
+  }
+
+  .form-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #34495e;
+  }
+
+  input[type="text"],
+  input[type="file"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s;
+    box-sizing: border-box;
+  }
+
+  input[type="text"]:focus,
+  input[type="file"]:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+  }
+
+  .phone-wrapper {
+    margin-bottom: 15px;
+  }
+
+  .phone-input {
+    margin-bottom: 10px;
+  }
+
+  #add-phone-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  #add-phone-btn:hover {
+    background: #2980b9;
+  }
+
+  button[type="submit"] {
+    background: #2ecc71;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s;
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  button[type="submit"]:hover {
+    background: #27ae60;
+  }
+
+  .image-upload-hint {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-top: 5px;
+  }
+
+  .qr-result {
+    margin-top: 40px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .qr-result h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+
+  .qr-result img {
+    max-width: 250px;
+    height: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: white;
+  }
+
+  .qr-result pre {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: left;
+    overflow-x: auto;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .form-container {
+      padding: 20px;
+    }
+
+    h1.form-title {
+      font-size: 24px;
+    }
+  }
+</style>
+
+<div class="form-container">
+  <!-- Logo Section 
+  <div class="logo-container">
+    <div class="logo-title">CODEIT</div>
+    <div class="logo-subtitle">TECHNOLOGY & CREATIVITY</div>
+  </div>-->
+
+  <!-- Updated Logo Section with Image -->
+  <div class="logo-container">
+    <img
+      src="{% static 'qrmainpage/logo.PNG' %}"
+      alt="CODEIT Logo"
+      class="logo"
+    />
+  </div>
+
+  <h1 class="form-title">Restaurant QR Generator</h1>
+
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+    action="/qrmainpage/restaurant/"
+  >
+    {% csrf_token %}
+
+    <div class="form-section">
+      <label for="id_name">Restaurant Name:</label>
+      <input
+        type="text"
+        name="name"
+        id="id_name"
+        required
+        placeholder="Enter restaurant name"
+      />
+    </div>
+
+    <div class="form-section">
+      <label for="id_images">Upload Images (max 15):</label>
+      <input
+        type="file"
+        name="images"
+        id="id_images"
+        accept="image/*"
+        multiple
+        required
+      />
+      <small class="image-upload-hint">Select up to 15 images</small>
+      <small style="color: red" id="image-limit-msg"></small>
+    </div>
+
+    <div class="form-section">
+      <label for="id_facebook">Facebook URL:</label>
+      <input
+        type="text"
+        name="facebook"
+        id="id_facebook"
+        required
+        placeholder="https://facebook.com/yourpage"
+      />
+
+      <label for="id_instagrame" style="margin-top: 15px">Instagram URL:</label>
+      <input
+        type="text"
+        name="instagram"
+        id="id_instagrame"
+        required
+        placeholder="https://instagram.com/yourpage"
+      />
+
+      <label for="id_tiktok" style="margin-top: 15px">TikTok URL:</label>
+      <input
+        type="text"
+        name="tiktok"
+        id="id_tiktok"
+        required
+        placeholder="https://tiktok.com/@yourpage"
+      />
+    </div>
+
+    <div class="form-section">
+      <div id="phone-wrapper" class="phone-wrapper">
+        <label>Phone Number 1:</label>
+        <input
+          type="text"
+          name="phone[]"
+          class="phone-input"
+          required
+          placeholder="Enter phone number"
+        />
+      </div>
+      <button type="button" id="add-phone-btn">
+        <span>➕</span> Add Another Phone
+      </button>
+    </div>
+
+    <button type="submit">Generate QR Code</button>
+  </form>
+</div>
+
+{% if qr_image %}
+<div class="qr-result">
+  <h3>Generated QR Code</h3>
+  <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code" />
+  <p><strong>Encoded Data:</strong></p>
+  <pre>{{ qr_content }}</pre>
+</div>
+{% endif %}
+
+<script>
+  // ... existing JavaScript remains unchanged ...
+  let phoneCount = 1;
+
+  document
+    .getElementById("add-phone-btn")
+    .addEventListener("click", function () {
+      if (phoneCount >= 3) return; // limit to 3
+
+      phoneCount++;
+      const wrapper = document.getElementById("phone-wrapper");
+      const label = document.createElement("label");
+      label.textContent = `Phone Number ${phoneCount}:`;
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = "phone[]";
+      input.className = "phone-input";
+      input.required = false;
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+    });
+
+  // Limit the number of images to 15
+
+  const input = document.getElementById("id_images");
+  const msg = document.getElementById("image-limit-msg");
+
+  input.addEventListener("change", () => {
+    if (input.files.length > 15) {
+      msg.textContent = "❌ You can upload a maximum of 15 images.";
+      input.value = ""; // Reset field
+    } else {
+      msg.textContent = "";
+    }
+  });
+</script>
+
+{%endblock%}

@@ -8,6 +8,10 @@ import os
 from PIL import Image
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import cm
+
+from .models import Restaurant, RestaurantImage
+from .serializers import RestaurantSerializer  # Add this import if you have a serializers.py file
+
 custom_page_size = (60 * cm, 60 * cm)  # A4 size 
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import cm
@@ -16,6 +20,7 @@ import string
 import random
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
+from django.conf import settings
 
 # ------------------------------------- Forms (still inside views.py)-------------------------------------
 class QRForm(forms.Form):
@@ -226,3 +231,90 @@ def download_pdf(request):
         return HttpResponse("Missing data", status=400)
 
     return save_qr_pdf(data, filename)
+
+
+#-----------------------------------------------------Formulaire view---------------------------------------------------
+def restaurant_qr_view(request):
+    qr_image = None
+    qr_content = None
+    saved_paths = []  
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        facebook = request.POST.get('facebook')
+        instagram = request.POST.get('instagram')
+        tiktok = request.POST.get('tiktok')
+        phones = request.POST.getlist('phone[]')
+        phones = [p.strip() for p in phones if p.strip()]  # Clean up empty fields
+
+       
+        uploaded_images = request.FILES.getlist('images')
+
+        if len(uploaded_images) > 15:
+         return HttpResponse("Too many images (max 15 allowed).", status=400)
+
+        data = {
+            'name': name,
+            'facebook': facebook,
+            'instagram': instagram,
+            'tiktok': tiktok,
+            "phone1": phones[0] if len(phones) > 0 else "",
+            "phone2": phones[1] if len(phones) > 1 else "",
+            "phone3": phones[2] if len(phones) > 2 else "",
+        }
+
+        serializer = RestaurantSerializer(data=data)
+        if serializer.is_valid():
+             restaurant = serializer.save()
+
+              # Print restaurant details to console
+             print("\n" + "="*50)
+             print("✅ RESTAURANT CREATED SUCCESSFULLY")
+             print("="*50)
+             print(f"ID: {restaurant.id}")
+             print(f"Name: {restaurant.name}")
+             print(f"Facebook: {restaurant.facebook}")
+             print(f"Instagram: {restaurant.instagram}")
+             print(f"TikTok: {restaurant.tiktok}")
+             print(f"Phone 1: {restaurant.phone1}")
+             print(f"Phone 2: {restaurant.phone2}")
+             print(f"Phone 3: {restaurant.phone3}")
+             print("-"*50 + "\n")
+
+        else:
+            return HttpResponse("Invalid data", status=400)
+
+        image_dir = os.path.join(settings.MEDIA_ROOT, 'restaurant_images')
+        os.makedirs(image_dir, exist_ok=True)
+
+        saved_paths = []
+        for img in uploaded_images:
+          img_path = os.path.join(image_dir, img.name)
+          with open(img_path, 'wb+') as dest:
+            for chunk in img.chunks():
+              dest.write(chunk)
+          saved_paths.append(img_path)
+
+        # Combine data for QR content
+        qr_content = (
+            f"Restaurant: {name}\n"
+            f"Phones: {', '.join(phones)}\n"
+            f"Facebook: {facebook}\n"
+            f"Instagram: {instagram}\n"
+            f"TikTok: {tiktok}"
+            
+      )
+        # Save images to RestaurantImage model
+        for img in uploaded_images:
+            restaurant_image = RestaurantImage(restaurant=restaurant, image=img)
+            restaurant_image.save()
+
+
+        # Generate QR image
+        qr = qrcode.make(qr_content)
+        buffered = io.BytesIO()
+        qr.save(buffered, format="PNG")
+        qr_image = base64.b64encode(buffered.getvalue()).decode()
+
+    return render(request, 'qrmainpage/formulaire.html', {'qr_image': qr_image,'qr_content': qr_content,'saved_paths': saved_paths})
+
+
