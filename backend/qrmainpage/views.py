@@ -361,6 +361,22 @@ def restaurant_qr_view(request):
         shutil.copy(file1, image_dirs)
         shutil.copy(file2, image_dirs)
 
+        # 1. Generate content
+        text_content = f"""Restaurant: {name}
+        Phones: {', '.join(phones)}
+        Facebook: {facebook}
+        Instagram: {instagram}
+        TikTok: {tiktok}
+        """
+
+        # 2. Save to statictest/restaurant_info.txt
+        txt_path = os.path.join(statictest_dir, 'restaurant_info.txt')
+        with open(txt_path, 'w') as f:
+            f.write(text_content)
+
+        # 3. Copy to Downloads/<folder_name>/
+        shutil.copy(txt_path, image_dirs)
+
        # pdf_response = save_qr_pdf(qr_content, filename)
 
     return render(request, 'qrmainpage/formulaire.html', {
