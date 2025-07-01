@@ -51,33 +51,37 @@ def generate_qr_image(data):
 
     return img
 # ----------------------------------------- save_qr_pdf------------------------------------------------
-def save_qr_pdf(data,  filename="qr_code.pdf"):
-    img = generate_qr_image(data)
+def save_qr_pdf(data, output_path):
+    from io import BytesIO
+    import qrcode
+    from PIL import Image
+    from reportlab.lib.utils import ImageReader
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.units import cm
 
-    # Convert image to byte stream
-    img_byte_arr = io.BytesIO()
-    img.save(img_byte_arr, format='PNG')
-    img_byte_arr.seek(0)
-    img_reader = ImageReader(img_byte_arr)
+    # Generate QR image
+    qr = qrcode.make(data)
+    img = qr.convert("RGB")
+    img = img.resize((300, 300), Image.LANCZOS)
+    image_reader = ImageReader(img)
 
-    pdf_buffer = io.BytesIO()
-    # Create PDF with A4 page size
-    c = canvas.Canvas(pdf_buffer, pagesize=custom_page_size)
-    # Draw QR image at (10cm, 10cm) from bottom-left, with 10cm width/height
-    c.drawImage(img_reader, x=10*cm, y=10*cm, width=10*cm, height=10*cm)
+    # Create PDF and save
+    c = canvas.Canvas(output_path, pagesize=custom_page_size)
+
+    # QR placement
+    x = 10 * cm
+    y = 10 * cm
+    c.drawImage(image_reader, x, y, width=10 * cm, height=10 * cm)
+
+    # Add "Scan Me" centered below QR code
+    c.setFont("Helvetica-Bold", 16)
+    c.drawCentredString(x + 5 * cm, y - 1 * cm, "Scan Me")
 
     c.showPage()
     c.save()
 
-    pdf_buffer.seek(0)
-    
-    return HttpResponse(
-        pdf_buffer.getvalue(),
-        content_type='application/pdf',
-        headers={'Content-Disposition': f'attachment; filename="{filename}"'}
-    )
 
-   
+# ----------------------------------------- append_qr_to_pdf------------------------------------------------
 def append_qr_to_pdf(qr_image):
     import os
     import json
@@ -237,7 +241,11 @@ def download_pdf(request):
 def restaurant_qr_view(request):
     qr_image = None
     qr_content = None
-    saved_paths = []  
+    saved_paths = [] 
+    pdf_url = None  
+    qr_url = None
+
+
     if request.method == 'POST':
         name = request.POST.get('name')
         facebook = request.POST.get('facebook')
@@ -307,14 +315,29 @@ def restaurant_qr_view(request):
         for img in uploaded_images:
             restaurant_image = RestaurantImage(restaurant=restaurant, image=img)
             restaurant_image.save()
-
-
+        
         # Generate QR image
-        qr = qrcode.make(qr_content)
-        buffered = io.BytesIO()
-        qr.save(buffered, format="PNG")
-        qr_image = base64.b64encode(buffered.getvalue()).decode()
+        #qr = qrcode.make(qr_content)
+        #buffered = io.BytesIO()
+        #qr.save(buffered, format="PNG")
+        #qr_image = base64.b64encode(buffered.getvalue()).decode()
 
-    return render(request, 'qrmainpage/formulaire.html', {'qr_image': qr_image,'qr_content': qr_content,'saved_paths': saved_paths})
+        random_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+        qr_url = f"https://codeitdz.com/{random_code}"
+       
+        filename = f"qr_menu_{restaurant.id}.pdf"
+        pdf_dir = os.path.join(settings.MEDIA_ROOT, 'restaurant_pdfs')
+        os.makedirs(pdf_dir, exist_ok=True)
+        pdf_path = os.path.join(pdf_dir, filename)
+        save_qr_pdf(qr_url, output_path=pdf_path)
+
+        pdf_url = settings.MEDIA_URL + f'restaurant_pdfs/{filename}'
+
+       # pdf_response = save_qr_pdf(qr_content, filename)
+
+    return render(request, 'qrmainpage/formulaire.html', {
+        'qr_content': qr_content,
+        'pdf_url': pdf_url
+    })
 
 

@@ -180,7 +180,7 @@
   <!-- Updated Logo Section with Image -->
   <div class="logo-container">
     <img
-      src="{% static 'qrmainpage/logo.PNG' %}"
+      src="{% static 'qrmainpage/logoCodeit-removebg-preview.png' %}"
       alt="CODEIT Logo"
       class="logo"
     />
@@ -269,14 +269,18 @@
   </form>
 </div>
 
-{% if qr_image %}
+{% if pdf_url %}
+<div style="text-align: center; margin-top: 20px">
+  <a href="{{ pdf_url }}" download class="btn btn-primary">
+    📄 Download Your QR PDF
+  </a>
+</div>
+{% endif %}
+
 <div class="qr-result">
-  <h3>Generated QR Code</h3>
-  <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code" />
   <p><strong>Encoded Data:</strong></p>
   <pre>{{ qr_content }}</pre>
 </div>
-{% endif %}
 
 <script>
   // ... existing JavaScript remains unchanged ...
