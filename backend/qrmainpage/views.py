@@ -8,10 +8,9 @@ import os
 from PIL import Image
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import cm
-
+import re
 from .models import Restaurant, RestaurantImage
 from .serializers import RestaurantSerializer  # Add this import if you have a serializers.py file
-
 custom_page_size = (60 * cm, 60 * cm)  # A4 size 
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import cm
@@ -21,6 +20,8 @@ import random
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from django.conf import settings
+import shutil
+
 
 # ------------------------------------- Forms (still inside views.py)-------------------------------------
 class QRForm(forms.Form):
@@ -332,6 +333,33 @@ def restaurant_qr_view(request):
         save_qr_pdf(qr_url, output_path=pdf_path)
 
         pdf_url = settings.MEDIA_URL + f'restaurant_pdfs/{filename}'
+
+        # ✅ Clean the name: lowercase, replace spaces with underscore, remove special characters
+        safe_name = re.sub(r'\W+', '_', name.strip().lower())
+
+        # ✅ Final folder name
+        folder_name = f"{safe_name}"
+        
+        # ✅ Path to user's Downloads directory
+        downloads_path = "/mnt/c/Users/tahri/Downloads"
+
+        # ✅ Full new directory path
+        image_dirs = os.path.join(downloads_path, folder_name)
+
+        # ✅ Create the directory
+        os.makedirs(image_dirs, exist_ok=True)
+
+        # Get absolute path to the statictest folder (relative to this file)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        statictest_dir = os.path.join(base_dir, 'statictest')
+
+        # Define file paths (adjust filenames if different)
+        file1 = os.path.join(statictest_dir, 'AI Roadmap_ based on Stanford AI Graduate Certificate.pdf')
+        file2 = os.path.join(statictest_dir, 'IBMDataScienceProfessionalCertificateV3_Badge20241118-24-6p8soi.pdf')
+
+        # Copy to Downloads/<folder_name>/
+        shutil.copy(file1, image_dirs)
+        shutil.copy(file2, image_dirs)
 
        # pdf_response = save_qr_pdf(qr_content, filename)
 
