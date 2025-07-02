@@ -429,14 +429,14 @@ def generate_qr_batch(count=50):
         current_number = int(f.read().strip())
 
     # Output folder
-    output_dir = os.path.join(settings.BASE_DIR, 'static', 'generated_qrs')
+    output_dir = os.path.join(settings.BASE_DIR, 'statics', 'generated_qrs')
     os.makedirs(output_dir, exist_ok=True)
 
     generated_files = []
 
     for i in range(count):
         number = current_number + i
-        qr_url = f"https://codeitdz.com/qr/{number}"
+        qr_url = f"https://qrcode.codeitdz.com/{number}"
         filename = f"qr_{number}.pdf"
         pdf_path = os.path.join(output_dir, filename)
 
