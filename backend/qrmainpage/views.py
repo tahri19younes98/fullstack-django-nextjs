@@ -156,7 +156,7 @@ def index(request):
             if file_form.is_valid():
                 #name = file_form.cleaned_data['name']
                 random_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-                qr_content = f"https://codeitdz.com/{random_code}"
+                qr_content = f"https://codeitdz.com/qr/{random_code}"
                 #img = qrcode.make(qr_content)
                 #img = generate_qr_image(qr_content)
                
@@ -323,9 +323,23 @@ def restaurant_qr_view(request):
         #qr.save(buffered, format="PNG")
         #qr_image = base64.b64encode(buffered.getvalue()).decode()
 
-        random_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-        qr_url = f"https://codeitdz.com/{random_code}"
-       
+        #random_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+        #qr_url = f"https://codeitdz.com/{random_code}"
+       #-----------------------------------------------------------------
+        counter_file = os.path.join(settings.BASE_DIR, 'qr_counter.txt')
+        if not os.path.exists(counter_file):
+            with open(counter_file, 'w') as f:
+                f.write('1')
+
+        with open(counter_file, 'r') as f:
+            current_number = int(f.read().strip())
+
+        qr_url = f"https://codeitdz.com/qr/{current_number}"
+
+        with open(counter_file, 'w') as f:
+            f.write(str(current_number + 1))
+        #-----------------------------------------------------------------
+
         filename = f"qr_menu_{restaurant.id}.pdf"
         pdf_dir = os.path.join(settings.MEDIA_ROOT, 'restaurant_pdfs')
         os.makedirs(pdf_dir, exist_ok=True)
@@ -354,12 +368,12 @@ def restaurant_qr_view(request):
         statictest_dir = os.path.join(base_dir, 'statictest')
 
         # Define file paths (adjust filenames if different)
-        file1 = os.path.join(statictest_dir, 'AI Roadmap_ based on Stanford AI Graduate Certificate.pdf')
-        file2 = os.path.join(statictest_dir, 'IBMDataScienceProfessionalCertificateV3_Badge20241118-24-6p8soi.pdf')
+       # file1 = os.path.join(statictest_dir, 'AI Roadmap_ based on Stanford AI Graduate Certificate.pdf')
+       # file2 = os.path.join(statictest_dir, 'IBMDataScienceProfessionalCertificateV3_Badge20241118-24-6p8soi.pdf')
 
         # Copy to Downloads/<folder_name>/
-        shutil.copy(file1, image_dirs)
-        shutil.copy(file2, image_dirs)
+      #  shutil.copy(file1, image_dirs)
+      #  shutil.copy(file2, image_dirs)
 
         # 1. Generate content
         text_content = f"""Restaurant: {name}
@@ -384,4 +398,77 @@ def restaurant_qr_view(request):
         'pdf_url': pdf_url
     })
 
+# ----------------------------------------- Restaurant Preview ------------------------------------------------
+def restaurant_preview(request, id):
+    restaurant = Restaurant.objects.get(pk=id)
+    images = RestaurantImage.objects.filter(restaurant=restaurant)
+    return render(request, 'qrmainpage/index-1.html', {
+        'restaurant': restaurant,
+        'images': images
+    })
 
+# ----------------------------------------- Batch QR Code Generation ------------------------------------------------
+
+def generate_qr_batch(count=50):
+    import os
+    import qrcode
+    from PIL import Image
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.units import cm
+    from reportlab.lib.utils import ImageReader
+    from django.conf import settings
+
+    counter_file = os.path.join(settings.BASE_DIR, 'qr_counter.txt')
+
+    # Initialize counter if not exists
+    if not os.path.exists(counter_file):
+        with open(counter_file, 'w') as f:
+            f.write('1')
+
+    with open(counter_file, 'r') as f:
+        current_number = int(f.read().strip())
+
+    # Output folder
+    output_dir = os.path.join(settings.BASE_DIR, 'static', 'generated_qrs')
+    os.makedirs(output_dir, exist_ok=True)
+
+    generated_files = []
+
+    for i in range(count):
+        number = current_number + i
+        qr_url = f"https://codeitdz.com/qr/{number}"
+        filename = f"qr_{number}.pdf"
+        pdf_path = os.path.join(output_dir, filename)
+
+        # Generate QR image
+        qr = qrcode.make(qr_url)
+        img = qr.convert("RGB").resize((300, 300))
+
+        # Create PDF
+        c = canvas.Canvas(pdf_path, pagesize=(20 * cm, 20 * cm))
+        c.drawImage(ImageReader(img), 5 * cm, 8 * cm, width=10 * cm, height=10 * cm)
+        c.setFont("Helvetica-Bold", 14)
+        c.drawCentredString(10 * cm, 7 * cm, "Scan me")
+        c.showPage()
+        c.save()
+
+        generated_files.append((number, qr_url, pdf_path))
+
+    # Update counter
+    with open(counter_file, 'w') as f:
+        f.write(str(current_number + count))
+
+    return generated_files
+
+# ----------------------------------------- Batch QR Code View ------------------------------------------------
+def generate_batch_view(request):
+    results = generate_qr_batch(count=50)
+
+    html = "<h2>✅ 50 QR Codes Generated</h2><ul>"
+    for num, url, path in results:
+        pdf_filename = os.path.basename(path)
+        pdf_url = f"/static/generated_qrs/{pdf_filename}"
+        html += f'<li><a href="{pdf_url}" target="_blank">{url}</a></li>'
+    html += "</ul>"
+
+    return HttpResponse(html)

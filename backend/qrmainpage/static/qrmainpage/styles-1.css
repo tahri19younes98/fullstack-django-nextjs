@@ -1,0 +1,43 @@
+/* Appliquer 100vh au carousel pour toutes tailles d’écran */
+#carouselId {
+    height: 100%;
+width : 100wh;
+margin-bottom:30px
+}
+
+#carouselId .carousel-item,
+#carouselId .carousel-item img {
+    height: 100%;
+width:100%;
+    object-fit: cover; /* Pour éviter la déformation de l’image */
+}
+
+/* Centrer les légendes verticalement */
+#carouselId .carousel-caption {
+    top: 50%;
+    transform: translateY(-50%);
+    bottom: auto;
+}
+
+ul{
+list-style:none;
+display:flex;
+flex-direction: row;
+justify-content : space-around;
+flex-wrap: wrap;
+align-items: center
+}
+
+li{
+margin-bottom :10px}
+li a{
+text-decoration:none;
+cursor:pointer;
+color:black;
+font-weight:bold
+}
+i{
+font-size:20px;}
+
+li i{
+color:orange;}
