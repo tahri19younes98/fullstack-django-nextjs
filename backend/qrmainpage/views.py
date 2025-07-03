@@ -21,7 +21,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from django.conf import settings
 import shutil
-
+from jinja2 import Environment, FileSystemLoader
 
 # ------------------------------------- Forms (still inside views.py)-------------------------------------
 class QRForm(forms.Form):
@@ -366,31 +366,33 @@ def restaurant_qr_view(request):
         # Get absolute path to the statictest folder (relative to this file)
         base_dir = os.path.dirname(os.path.abspath(__file__))
         statictest_dir = os.path.join(base_dir, 'statictest')
-
-        # Define file paths (adjust filenames if different)
-       # file1 = os.path.join(statictest_dir, 'AI Roadmap_ based on Stanford AI Graduate Certificate.pdf')
-       # file2 = os.path.join(statictest_dir, 'IBMDataScienceProfessionalCertificateV3_Badge20241118-24-6p8soi.pdf')
-
-        # Copy to Downloads/<folder_name>/
-      #  shutil.copy(file1, image_dirs)
-      #  shutil.copy(file2, image_dirs)
+         
+        env = Environment(loader=FileSystemLoader(statictest_dir))
+        template = env.get_template('index_template.html')
+        rendered_html = template.render(
+         name=restaurant.name,
+         facebook=restaurant.facebook,
+         instagram=restaurant.instagram,
+         tiktok=restaurant.tiktok,
+         phone1=restaurant.phone1,
+         phone2=restaurant.phone2,
+         phone3=restaurant.phone3,
+         images=RestaurantImage.objects.filter(restaurant=restaurant)
+        )
+   
+        # Save the rendered HTML to a file
+        output_path = os.path.join(statictest_dir, 'index-1.html')
+        with open(output_path, 'w') as f:
+            f.write(rendered_html)
 
         # 1. Generate content
-        text_content = f"""Restaurant: {name}
-        Phones: {', '.join(phones)}
-        Facebook: {facebook}
-        Instagram: {instagram}
-        TikTok: {tiktok}
-        """
 
         # 2. Save to statictest/restaurant_info.txt
-        txt_path = os.path.join(statictest_dir, 'restaurant_info.txt')
-        with open(txt_path, 'w') as f:
-            f.write(text_content)
+        #txt_path = os.path.join(statictest_dir, 'index-1.html')
 
         # 3. Copy to Downloads/<folder_name>/
-        shutil.copy(txt_path, image_dirs)
-
+        #shutil.copy(txt_path, image_dirs)
+        shutil.copy(output_path, image_dirs)
        # pdf_response = save_qr_pdf(qr_content, filename)
 
     return render(request, 'qrmainpage/formulaire.html', {
@@ -402,6 +404,8 @@ def restaurant_qr_view(request):
 def restaurant_preview(request, id):
     restaurant = Restaurant.objects.get(pk=id)
     images = RestaurantImage.objects.filter(restaurant=restaurant)
+    
+
     return render(request, 'qrmainpage/index-1.html', {
         'restaurant': restaurant,
         'images': images
