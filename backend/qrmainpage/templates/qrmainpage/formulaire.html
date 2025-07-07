@@ -4,6 +4,89 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 />
 <style>
+  /* ADDED AD SIDEBAR STYLES */
+  .page-container {
+    display: flex;
+    width: 100%;
+    max-width: 1400px;
+    gap: 30px;
+    margin: 0 auto;
+  }
+
+  .sidebar {
+    width: 200px;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-self: flex-start;
+  }
+
+  .ad-unit {
+    width: 100%;
+    padding: 15px;
+    background: var(--light);
+    border-radius: 10px;
+    text-align: center;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px dashed var(--gray);
+  }
+
+  .ad-unit h3 {
+    color: var(--secondary);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+  }
+
+  .ad-placeholder {
+    width: 120px;
+    height: 300px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark-gray);
+    font-weight: 600;
+  }
+  /* ADDED AD IMAGE STYLES */
+  .ad-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ad-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .main-content {
+    flex: 1;
+    max-width: 900px;
+  }
+
+  /* Hide sidebars on smaller screens */
+  @media (max-width: 1100px) {
+    .sidebar {
+      display: none;
+    }
+    .main-content {
+      max-width: 100%;
+    }
+  }
+
   :root {
     --primary: rgb(60, 77, 231);
     --primary-dark: rgb(43, 43, 192);
@@ -173,7 +256,7 @@
 
   .file-upload-area:hover {
     border-color: var(--primary);
-    background: rgba(231, 76, 60, 0.05);
+    background: rgba(94, 60, 231, 0.05);
   }
 
   .file-upload-area i {
@@ -270,14 +353,14 @@
     justify-content: center;
     gap: 12px;
     letter-spacing: 0.5px;
-    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+    box-shadow: 0 6px 15px rgba(80, 60, 231, 0.4);
     width: 100%;
     margin-top: 10px;
   }
 
   .btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5);
+    box-shadow: 0 8px 20px rgba(97, 60, 231, 0.5);
   }
 
   .btn:active {
@@ -452,213 +535,323 @@
     }
   }
 </style>
-
-<div class="form-container">
-  <!-- Logo Section 
-  <div class="logo-container">
-    <div class="logo-title">CODEIT</div>
-    <div class="logo-subtitle">TECHNOLOGY & CREATIVITY</div>
-  </div>-->
-
-  <!-- Updated Logo Section with Image -->
-  <div class="logo-container">
-    <img
-      src="{% static 'qrmainpage/logoCodeit-removebg-preview.png' %}"
-      alt="CODEIT Logo"
-      class="logo"
-    />
+<div class="page-container">
+  <!-- Left Ad Sidebar -->
+  <div class="sidebar left-sidebar">
+    <div class="ad-unit">
+      <h3>Advertisement</h3>
+      <div class="ad-image">
+        <img src="{% static 'qrmainpage/Bimo.PNG' %}" alt="Ad 1" />
+      </div>
+    </div>
+    <div class="ad-unit">
+      <h3>Special Offer</h3>
+      <div class="ad-image">
+        <img src="{% static 'qrmainpage/Ramy-1.webp' %}" alt="Ad 2" />
+      </div>
+    </div>
   </div>
 
-  <h1 class="form-title">Restaurant QR Generator</h1>
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="app-container">
+      <div class="form-container">
+        <div class="logo-container">
+          <img
+            src="{% static 'qrmainpage/logoCodeit-removebg-preview.png' %}"
+            alt="CODEIT Logo"
+            class="logo"
+          />
+        </div>
 
-  <form
-    method="POST"
-    enctype="multipart/form-data"
-    action="/qrmainpage/restaurant/"
-  >
-    {% csrf_token %}
+        <h1 class="form-title">Restaurant QR Generator</h1>
 
-    <div class="form-section">
-      <label for="id_name">Restaurant Name:</label>
-      <input
-        type="text"
-        name="name"
-        id="id_name"
-        required
-        placeholder="Enter restaurant name"
-      />
-    </div>
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          action="/qrmainpage/restaurant/"
+        >
+          {% csrf_token %}
 
-    <div class="form-section">
-      <label for="id_images">Upload Images (max 15):</label>
-      <div class="file-upload-area" id="upload-area">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <p>Click to upload or drag & drop images</p>
-        <input
-          type="file"
-          name="images"
-          id="id_images"
-          accept="image/*"
-          multiple
-          required
-          style="display: none"
-        />
+          <div class="form-section">
+            <label for="id_name">Restaurant Name:</label>
+            <input
+              type="text"
+              name="name"
+              id="id_name"
+              required
+              placeholder="Enter restaurant name"
+            />
+          </div>
+
+          <div class="form-section">
+            <label for="id_images">Upload Images (max 15):</label>
+            <div class="file-upload-area" id="upload-area">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Click to upload or drag & drop images</p>
+              <input
+                type="file"
+                name="images"
+                id="id_images"
+                accept="image/*"
+                multiple
+                style="display: none"
+              />
+            </div>
+            <small class="image-upload-hint"
+              >Select up to 15 images (JPG, PNG, GIF)</small
+            >
+            <small id="image-limit-msg" style="color: red"></small>
+            <!-- ERROR MESSAGE DISPLAY -->
+            {% if error_message %}
+            <div
+              class="error-message"
+              style="
+                color: red;
+                padding: 10px;
+                background: #ffecec;
+                border-radius: 5px;
+                margin-top: 10px;
+              "
+            >
+              {{ error_message }}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="form-section">
+            <label for="id_facebook">Facebook URL :</label>
+            <input
+              type="text"
+              name="facebook"
+              id="id_facebook"
+              placeholder="https://facebook.com/yourpage"
+            />
+            <input
+              type="text"
+              name="facebookUser"
+              id="id_facebookUser"
+              placeholder="Facebook Username (optional)"
+            />
+
+            <label for="id_instagrame" style="margin-top: 15px"
+              >Instagram URL:</label
+            >
+            <input
+              type="text"
+              name="instagram"
+              id="id_instagrame"
+              placeholder="https://instagram.com/yourpage"
+            />
+            <input
+              type="text"
+              name="instagramUser"
+              id="id_instagramUser"
+              placeholder="Instagram Username (optional)"
+            />
+
+            <label for="id_tiktok" style="margin-top: 15px">TikTok URL:</label>
+            <input
+              type="text"
+              name="tiktok"
+              id="id_tiktok"
+              placeholder="https://tiktok.com/@yourpage"
+            />
+            <input
+              type="text"
+              name="tiktokUser"
+              id="id_tiktokUser"
+              placeholder="TikTok Username (optional)"
+            />
+          </div>
+
+          <div class="form-section">
+            <div id="phone-wrapper" class="phone-wrapper">
+              <label>Phone Number 1:</label>
+              <input
+                type="text"
+                name="phone[]"
+                class="phone-input"
+                required
+                placeholder="Enter phone number"
+              />
+            </div>
+            <button type="button" id="add-phone-btn">
+              <span>➕</span> Add Another Phone
+            </button>
+          </div>
+
+          <button type="submit" class="btn">
+            <i class="fas fa-qrcode"></i> Generate QR Code
+          </button>
+        </form>
       </div>
-      <small class="image-upload-hint"
-        >Select up to 15 images (JPG, PNG, GIF)</small
-      >
-      <small id="image-limit-msg" style="color: red"></small>
     </div>
 
-    <div class="form-section">
-      <label for="id_facebook">Facebook URL:</label>
-      <input
-        type="text"
-        name="facebook"
-        id="id_facebook"
-        required
-        placeholder="https://facebook.com/yourpage"
-      />
+    {% if pdf_url %}
+    <div style="text-align: center; margin-top: 20px">
+      <a href="{{ pdf_url }}" download class="btn btn-primary">
+        📄 Download Your QR PDF
+      </a>
+    </div>
+    {% endif %}
 
-      <label for="id_instagrame" style="margin-top: 15px">Instagram URL:</label>
-      <input
-        type="text"
-        name="instagram"
-        id="id_instagrame"
-        required
-        placeholder="https://instagram.com/yourpage"
-      />
-
-      <label for="id_tiktok" style="margin-top: 15px">TikTok URL:</label>
-      <input
-        type="text"
-        name="tiktok"
-        id="id_tiktok"
-        required
-        placeholder="https://tiktok.com/@yourpage"
-      />
+    <div class="qr-result">
+      <p><strong>Encoded Data:</strong></p>
+      <pre>{{ qr_content }}</pre>
     </div>
 
-    <div class="form-section">
-      <div id="phone-wrapper" class="phone-wrapper">
-        <label>Phone Number 1:</label>
-        <input
-          type="text"
-          name="phone[]"
-          class="phone-input"
-          required
-          placeholder="Enter phone number"
-        />
-      </div>
-      <button type="button" id="add-phone-btn">
-        <span>➕</span> Add Another Phone
-      </button>
-    </div>
-
-    <button type="submit" class="btn">
-      <i class="fas fa-qrcode"></i> Generate QR Code
-    </button>
-  </form>
-</div>
-
-{% if pdf_url %}
-<div style="text-align: center; margin-top: 20px">
-  <a href="{{ pdf_url }}" download class="btn btn-primary">
-    📄 Download Your QR PDF
-  </a>
-</div>
-{% endif %}
-
-<div class="qr-result">
-  <p><strong>Encoded Data:</strong></p>
-  <pre>{{ qr_content }}</pre>
-</div>
-
-<script>
-  // ... existing JavaScript remains unchanged ...
-  let phoneCount = 1;
-
-  document
-    .getElementById("add-phone-btn")
-    .addEventListener("click", function () {
-      if (phoneCount >= 3) return; // limit to 3
-
-      phoneCount++;
+    <script>
+      // ... existing JavaScript remains unchanged ...
+      let phoneCount = 1;
       const wrapper = document.getElementById("phone-wrapper");
-      const label = document.createElement("label");
-      label.textContent = `Phone Number ${phoneCount}:`;
 
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = "phone[]";
-      input.className = "phone-input";
-      input.required = false;
+      document
+        .getElementById("add-phone-btn")
+        .addEventListener("click", function () {
+          if (phoneCount >= 3) return; // limit to 3
+          phoneCount++;
 
-      wrapper.appendChild(label);
-      wrapper.appendChild(input);
-    });
+          const container = document.createElement("div");
+          container.className = "phone-input-group";
+          container.style.display = "flex";
+          container.style.alignItems = "center";
+          container.style.gap = "10px";
+          container.style.marginBottom = "10px";
 
-  // Limit the number of images to 15
+          const label = document.createElement("label");
+          label.textContent = `Phone Number ${phoneCount}:`;
 
-  const input = document.getElementById("id_images");
-  const msg = document.getElementById("image-limit-msg");
+          const input = document.createElement("input");
+          input.type = "text";
+          input.name = "phone[]";
+          input.className = "phone-input";
+          input.required = false;
 
-  input.addEventListener("change", () => {
-    if (input.files.length > 15) {
-      msg.textContent = "❌ You can upload a maximum of 15 images.";
-      input.value = ""; // Reset field
-    } else {
-      msg.textContent = "";
-    }
-  });
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.textContent = "❌";
+          removeBtn.style.background = "#e74c3c";
+          removeBtn.style.color = "white";
+          removeBtn.style.border = "none";
+          removeBtn.style.padding = "6px 10px";
+          removeBtn.style.borderRadius = "6px";
+          removeBtn.style.cursor = "pointer";
 
-  // Enhanced file upload functionality
-  const uploadArea = document.getElementById("upload-area");
-  const fileInput = document.getElementById("id_images");
-  const imageLimitMsg = document.getElementById("image-limit-msg");
+          removeBtn.addEventListener("click", () => {
+            wrapper.removeChild(container);
+            phoneCount--;
+          });
 
-  // File upload events
-  uploadArea.addEventListener("click", () => {
-    fileInput.click();
-  });
+          container.appendChild(label);
+          container.appendChild(input);
+          container.appendChild(removeBtn);
+          wrapper.appendChild(container);
+        });
 
-  uploadArea.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    uploadArea.style.borderColor = "var(--primary)";
-    uploadArea.style.backgroundColor = "rgba(231, 76, 60, 0.08)";
-  });
+      // Limit the number of images to 15
 
-  uploadArea.addEventListener("dragleave", () => {
-    uploadArea.style.borderColor = "var(--gray)";
-    uploadArea.style.backgroundColor = "#fcfcfc";
-  });
+      const input = document.getElementById("id_images");
+      const msg = document.getElementById("image-limit-msg");
 
-  uploadArea.addEventListener("drop", (e) => {
-    e.preventDefault();
-    uploadArea.style.borderColor = "var(--gray)";
-    uploadArea.style.backgroundColor = "#fcfcfc";
+      input.addEventListener("change", () => {
+        if (input.files.length > 15) {
+          msg.textContent = "❌ You can upload a maximum of 15 images.";
+          input.value = ""; // Reset field
+        } else {
+          msg.textContent = "";
+        }
+      });
 
-    if (e.dataTransfer.files.length) {
-      fileInput.files = e.dataTransfer.files;
-      checkImageCount();
-    }
-  });
+      // Enhanced file upload functionality
+      const uploadArea = document.getElementById("upload-area");
+      const fileInput = document.getElementById("id_images");
+      const imageLimitMsg = document.getElementById("image-limit-msg");
 
-  // Image count validation
-  fileInput.addEventListener("change", checkImageCount);
+      // File upload events
+      uploadArea.addEventListener("click", () => {
+        fileInput.click();
+      });
 
-  function checkImageCount() {
-    if (fileInput.files.length > 15) {
-      imageLimitMsg.textContent = "❌ You can upload a maximum of 15 images.";
-      fileInput.value = "";
-    } else if (fileInput.files.length > 0) {
-      imageLimitMsg.textContent = `✅ ${fileInput.files.length} file(s) selected`;
-      imageLimitMsg.style.color = "var(--success)";
-      imageLimitMsg.style.fontWeight = "600";
-    } else {
-      imageLimitMsg.textContent = "";
-    }
-  }
-</script>
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = "var(--primary)";
+        uploadArea.style.backgroundColor = "rgba(231, 76, 60, 0.08)";
+      });
 
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.style.borderColor = "var(--gray)";
+        uploadArea.style.backgroundColor = "#fcfcfc";
+      });
+
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = "var(--gray)";
+        uploadArea.style.backgroundColor = "#fcfcfc";
+
+        if (e.dataTransfer.files.length) {
+          fileInput.files = e.dataTransfer.files;
+          checkImageCount();
+        }
+      });
+      // Add to existing <script> in formulaire.html
+      document.querySelector("form").addEventListener("submit", function (e) {
+        const fileInput = document.getElementById("id_images");
+        const errorContainer =
+          document.querySelector(".error-message") ||
+          document.createElement("div");
+
+        // Clear existing errors
+        errorContainer.textContent = "";
+
+        // Validate images
+        if (fileInput.files.length === 0) {
+          e.preventDefault();
+          errorContainer.textContent = "Please upload at least one image.";
+          errorContainer.style.display = "block";
+
+          // Add container if doesn't exist
+          if (!errorContainer.parentNode) {
+            fileInput.parentNode.insertBefore(
+              errorContainer,
+              fileInput.nextSibling
+            );
+          }
+        }
+      });
+      // Image count validation
+      fileInput.addEventListener("change", checkImageCount);
+
+      function checkImageCount() {
+        if (fileInput.files.length > 15) {
+          imageLimitMsg.textContent =
+            "❌ You can upload a maximum of 15 images.";
+          fileInput.value = "";
+        } else if (fileInput.files.length > 0) {
+          imageLimitMsg.textContent = `✅ ${fileInput.files.length} file(s) selected`;
+          imageLimitMsg.style.color = "var(--success)";
+          imageLimitMsg.style.fontWeight = "600";
+        } else {
+          imageLimitMsg.textContent = "";
+        }
+      }
+    </script>
+
+    <!-- Right Ad Sidebar -->
+  </div>
+  <div class="sidebar right-sidebar">
+    <div class="ad-unit">
+      <h3>Advertisement</h3>
+      <div class="ad-image">
+        <img src="{% static 'qrmainpage/Ramy-1.webp' %}" alt="Ad 1" />
+      </div>
+    </div>
+    <div class="ad-unit">
+      <h3>Recommended</h3>
+      <div class="ad-image">
+        <img src="{% static 'qrmainpage/Bimo.PNG' %}" alt="Ad 2" />
+      </div>
+    </div>
+  </div>
+</div>
 {%endblock%}

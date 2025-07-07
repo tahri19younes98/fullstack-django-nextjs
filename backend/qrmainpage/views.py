@@ -250,13 +250,28 @@ def restaurant_qr_view(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         facebook = request.POST.get('facebook')
+        facebookUser = request.POST.get('facebookUser')
         instagram = request.POST.get('instagram')
+        instagramUser = request.POST.get('instagramUser')
         tiktok = request.POST.get('tiktok')
+        tiktokUser = request.POST.get('tiktokUser')
         phones = request.POST.getlist('phone[]')
         phones = [p.strip() for p in phones if p.strip()]  # Clean up empty fields
 
        
         uploaded_images = request.FILES.getlist('images')
+
+         # Validate images
+        if not uploaded_images:
+            error_message = "Please upload at least one image."
+        elif len(uploaded_images) > 15:
+            error_message = "Too many images (max 15 allowed)."
+
+        # Return error if validation fails
+        if error_message:
+            return render(request, 'qrmainpage/formulaire.html', {
+                'error_message': error_message
+            })
 
         if len(uploaded_images) > 15:
          return HttpResponse("Too many images (max 15 allowed).", status=400)
@@ -264,8 +279,11 @@ def restaurant_qr_view(request):
         data = {
             'name': name,
             'facebook': facebook,
+            'facebookUser': facebookUser,
             'instagram': instagram,
+            'instagramUser': instagramUser,
             'tiktok': tiktok,
+            'tiktokUser': tiktokUser,
             "phone1": phones[0] if len(phones) > 0 else "",
             "phone2": phones[1] if len(phones) > 1 else "",
             "phone3": phones[2] if len(phones) > 2 else "",
@@ -282,8 +300,11 @@ def restaurant_qr_view(request):
              print(f"ID: {restaurant.id}")
              print(f"Name: {restaurant.name}")
              print(f"Facebook: {restaurant.facebook}")
+             print(f"Facebook User: {restaurant.facebookUser}")
              print(f"Instagram: {restaurant.instagram}")
+             print(f"Instagram User: {restaurant.instagramUser}")
              print(f"TikTok: {restaurant.tiktok}")
+             print(f"TikTok User: {restaurant.tiktokUser}")
              print(f"Phone 1: {restaurant.phone1}")
              print(f"Phone 2: {restaurant.phone2}")
              print(f"Phone 3: {restaurant.phone3}")
@@ -372,8 +393,11 @@ def restaurant_qr_view(request):
         rendered_html = template.render(
          name=restaurant.name,
          facebook=restaurant.facebook,
+         facebookUser=restaurant.facebookUser,
          instagram=restaurant.instagram,
+         instagramUser=restaurant.instagramUser,
          tiktok=restaurant.tiktok,
+         tiktokUser=restaurant.tiktokUser,
          phone1=restaurant.phone1,
          phone2=restaurant.phone2,
          phone3=restaurant.phone3,
