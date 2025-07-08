@@ -33,6 +33,7 @@
     border-radius: 10px;
     text-align: center;
     min-height: 300px;
+    height: 350px; /* Fixed height for consistency */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -64,12 +65,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 1; /* Takes available space */
   }
 
   .ad-image img {
     max-width: 100%;
     max-height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* Changed from cover to maintain aspect ratio */
     border-radius: 8px;
   }
 
@@ -589,7 +591,7 @@
             <label for="id_images">Upload Images (max 15):</label>
             <div class="file-upload-area" id="upload-area">
               <i class="fas fa-cloud-upload-alt"></i>
-              <p>Click to upload or drag & drop images</p>
+              <p class="mytxt">Click to upload or drag & drop images</p>
               <input
                 type="file"
                 name="images"
@@ -810,6 +812,7 @@
           e.preventDefault();
           errorContainer.textContent = "Please upload at least one image.";
           errorContainer.style.display = "block";
+          errorContainer.style.color = "red";
 
           // Add container if doesn't exist
           if (!errorContainer.parentNode) {
