@@ -605,6 +605,11 @@
               >Select up to 15 images (JPG, PNG, GIF)</small
             >
             <small id="image-limit-msg" style="color: red"></small>
+            <div
+              id="image-error-message"
+              class="error-message"
+              style="display: none; color: red"
+            ></div>
             <!-- ERROR MESSAGE DISPLAY -->
             {% if error_message %}
             <div
@@ -628,7 +633,7 @@
               type="text"
               name="facebook"
               id="id_facebook"
-              placeholder="https://facebook.com/yourpage"
+              placeholder="https://facebook.com/yourpage (optional)"
             />
             <input
               type="text"
@@ -644,7 +649,7 @@
               type="text"
               name="instagram"
               id="id_instagrame"
-              placeholder="https://instagram.com/yourpage"
+              placeholder="https://instagram.com/yourpage (optional)"
             />
             <input
               type="text"
@@ -658,7 +663,7 @@
               type="text"
               name="tiktok"
               id="id_tiktok"
-              placeholder="https://tiktok.com/@yourpage"
+              placeholder="https://tiktok.com/@yourpage (optional)"
             />
             <input
               type="text"
@@ -705,7 +710,7 @@
     </div>
 
     <script>
-      // ... existing JavaScript remains unchanged ...
+      // Phone Number Logic
       let phoneCount = 1;
       const wrapper = document.getElementById("phone-wrapper");
 
@@ -752,26 +757,35 @@
           wrapper.appendChild(container);
         });
 
-      // Limit the number of images to 15
-
-      const input = document.getElementById("id_images");
-      const msg = document.getElementById("image-limit-msg");
-
-      input.addEventListener("change", () => {
-        if (input.files.length > 15) {
-          msg.textContent = "❌ You can upload a maximum of 15 images.";
-          input.value = ""; // Reset field
-        } else {
-          msg.textContent = "";
-        }
-      });
-
-      // Enhanced file upload functionality
-      const uploadArea = document.getElementById("upload-area");
+      // File Upload Logic
       const fileInput = document.getElementById("id_images");
       const imageLimitMsg = document.getElementById("image-limit-msg");
+      const errorContainer = document.getElementById("image-error-message");
+      const uploadArea = document.getElementById("upload-area");
 
-      // File upload events
+      // File count limit handler
+      function checkImageCount() {
+        if (fileInput.files.length > 15) {
+          imageLimitMsg.textContent =
+            "❌ You can upload a maximum of 15 images.";
+          fileInput.value = ""; // Reset field
+        } else if (fileInput.files.length > 0) {
+          imageLimitMsg.textContent = `✅ ${fileInput.files.length} file(s) selected`;
+          imageLimitMsg.style.color = "var(--success)";
+          imageLimitMsg.style.fontWeight = "600";
+
+          // ✅ Clear the error message
+          errorContainer.textContent = "";
+          errorContainer.style.display = "none";
+        } else {
+          imageLimitMsg.textContent = "";
+        }
+      }
+
+      // Validate on file input change
+      fileInput.addEventListener("change", checkImageCount);
+
+      // Enhanced drag & drop file upload
       uploadArea.addEventListener("click", () => {
         fileInput.click();
       });
@@ -797,48 +811,15 @@
           checkImageCount();
         }
       });
-      // Add to existing <script> in formulaire.html
+
+      // Form submission validation
       document.querySelector("form").addEventListener("submit", function (e) {
-        const fileInput = document.getElementById("id_images");
-        const errorContainer =
-          document.querySelector(".error-message") ||
-          document.createElement("div");
-
-        // Clear existing errors
-        errorContainer.textContent = "";
-
-        // Validate images
         if (fileInput.files.length === 0) {
           e.preventDefault();
-          errorContainer.textContent = "Please upload at least one image.";
+          errorContainer.textContent = "❌ Please upload at least one image.";
           errorContainer.style.display = "block";
-          errorContainer.style.color = "red";
-
-          // Add container if doesn't exist
-          if (!errorContainer.parentNode) {
-            fileInput.parentNode.insertBefore(
-              errorContainer,
-              fileInput.nextSibling
-            );
-          }
         }
       });
-      // Image count validation
-      fileInput.addEventListener("change", checkImageCount);
-
-      function checkImageCount() {
-        if (fileInput.files.length > 15) {
-          imageLimitMsg.textContent =
-            "❌ You can upload a maximum of 15 images.";
-          fileInput.value = "";
-        } else if (fileInput.files.length > 0) {
-          imageLimitMsg.textContent = `✅ ${fileInput.files.length} file(s) selected`;
-          imageLimitMsg.style.color = "var(--success)";
-          imageLimitMsg.style.fontWeight = "600";
-        } else {
-          imageLimitMsg.textContent = "";
-        }
-      }
     </script>
 
     <!-- Right Ad Sidebar -->
