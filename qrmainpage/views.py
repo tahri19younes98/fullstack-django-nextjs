@@ -245,16 +245,16 @@ def restaurant_qr_view(request):
     saved_paths = [] 
     pdf_url = None  
     qr_url = None
-
+    error_message = None
 
     if request.method == 'POST':
         name = request.POST.get('name')
-        facebook = request.POST.get('facebook')
-        facebookUser = request.POST.get('facebookUser')
-        instagram = request.POST.get('instagram')
-        instagramUser = request.POST.get('instagramUser')
-        tiktok = request.POST.get('tiktok')
-        tiktokUser = request.POST.get('tiktokUser')
+        facebook = request.POST.get('facebook').strip()
+        facebookUser = request.POST.get('facebookUser').strip()
+        instagram = request.POST.get('instagram').strip()
+        instagramUser = request.POST.get('instagramUser').strip()
+        tiktok = request.POST.get('tiktok').strip()
+        tiktokUser = request.POST.get('tiktokUser').strip()
         phones = request.POST.getlist('phone[]')
         phones = [p.strip() for p in phones if p.strip()]  # Clean up empty fields
 
@@ -347,20 +347,20 @@ def restaurant_qr_view(request):
         #random_code = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
         #qr_url = f"https://codeitdz.com/{random_code}"
        #-----------------------------------------------------------------
-        counter_file = os.path.join(settings.BASE_DIR, 'qr_counter.txt')
-        if not os.path.exists(counter_file):
-            with open(counter_file, 'w') as f:
-                f.write('1')
+       # counter_file = os.path.join(settings.BASE_DIR, 'qr_counter.txt')
+       # if not os.path.exists(counter_file):
+       #     with open(counter_file, 'w') as f:
+       #         f.write('1')
 
-        with open(counter_file, 'r') as f:
-            current_number = int(f.read().strip())
+       # with open(counter_file, 'r') as f:
+       #     current_number = int(f.read().strip())
 
-        qr_url = f"https://codeitdz.com/qr/{current_number}"
+       # qr_url = f"https://codeitdz.com/qr/{current_number}"  
 
-        with open(counter_file, 'w') as f:
-            f.write(str(current_number + 1))
+       # with open(counter_file, 'w') as f:
+       #     f.write(str(current_number + 1))
         #-----------------------------------------------------------------
-
+        qr_url = f"https://codeitdz.com/qr/{restaurant.id}" 
         filename = f"qr_menu_{restaurant.id}.pdf"
         pdf_dir = os.path.join(settings.MEDIA_ROOT, 'restaurant_pdfs')
         os.makedirs(pdf_dir, exist_ok=True)
