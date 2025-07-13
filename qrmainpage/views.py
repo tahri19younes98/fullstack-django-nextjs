@@ -1,6 +1,7 @@
 from django import forms
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
+from django.urls import reverse
 import qrcode
 import io
 import base64
@@ -9,6 +10,8 @@ from PIL import Image
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import cm
 import re
+
+from main.models import Redirection
 from .models import Restaurant, RestaurantImage
 from .serializers import RestaurantSerializer  # Add this import if you have a serializers.py file
 custom_page_size = (60 * cm, 60 * cm)  # A4 size 
@@ -145,6 +148,7 @@ def append_qr_to_pdf(qr_image):
 
 # ------------------------------------------------------- Main view ----------------------------------------------------
 def index(request):
+    return redirect('restaurant/')
     qr_image = None
     qr_form = QRForm()
     file_form = FileQRForm()
@@ -239,7 +243,8 @@ def download_pdf(request):
 
 
 #-----------------------------------------------------Formulaire view---------------------------------------------------
-def restaurant_qr_view(request):
+def restaurant_qr_view(request,id):
+    id = id
     qr_image = None
     qr_content = None
     saved_paths = [] 
@@ -277,6 +282,7 @@ def restaurant_qr_view(request):
          return HttpResponse("Too many images (max 15 allowed).", status=400)
 
         data = {
+            'id':id,
             'name': name,
             'facebook': facebook,
             'facebookUser': facebookUser,
@@ -309,6 +315,10 @@ def restaurant_qr_view(request):
              print(f"Phone 2: {restaurant.phone2}")
              print(f"Phone 3: {restaurant.phone3}")
              print("-"*50 + "\n")
+             redirection = Redirection()
+             redirection.id = restaurant.id 
+             redirection.site =request.build_absolute_uri(reverse('qrmainpage:restaurant_preview', kwargs={'id': redirection.id}))
+             redirection.save()
 
         else:
             return HttpResponse("Invalid data", status=400)
@@ -421,7 +431,8 @@ def restaurant_qr_view(request):
 
     return render(request, 'qrmainpage/formulaire.html', {
         'qr_content': qr_content,
-        'pdf_url': pdf_url
+        'pdf_url': pdf_url,
+        'id' : id
     })
 
 # ----------------------------------------- Restaurant Preview ------------------------------------------------

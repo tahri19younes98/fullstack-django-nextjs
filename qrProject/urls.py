@@ -22,7 +22,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('qrmainpage/',include("qrmainpage.urls")),
-    path('gestiondata/',include("gestiondata.urls"))
+    path('gestiondata/',include("gestiondata.urls")),
+    path('',include('main.urls'))
 ]
 
 
